@@ -6,11 +6,12 @@ from dataloader import DataLoader
 import os
 
 class Classifier():
-  def __init__(self, data, model_name, checkpoint,test):
+  def __init__(self, data, model_name, exp_name,test):
 
     self.data = data
     self.test = test
-    self.checkpoint_filepath = os.path.join("../checkpoints/", checkpoint)
+    self.exp_name = exp_name
+    self.checkpoint_filepath = os.path.join("../checkpoints/", exp_name)
     self.model = getattr(models, model_name)
     self.model.compile(optimizer = tf.optimizers.Adam(),
               loss = 'binary_crossentropy',
@@ -26,13 +27,16 @@ class Classifier():
     mode='max',
     save_best_only=True)
     
+    log_dir = os.path.join("../tensorboard/", self.exp_name)
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    
     history = self.model.fit(self.data.train_generator,
         steps_per_epoch=8,  
         epochs=epochs,
         verbose=1,
         validation_data = self.data.val_generator,
         validation_steps=8,
-        callbacks=[model_checkpoint_callback])
+        callbacks=[model_checkpoint_callback, tensorboard_callback])
     
     self.eval_model()
   
@@ -50,7 +54,7 @@ class Classifier():
 def main(args):
   data = DataLoader()
   classifier = Classifier(data, model_name=args.model_name,
-                          checkpoint=args.checkpoint, test=args.test)
+                          exp_name=args.exp_name, test=args.test)
   if args.test:
     classifier.eval_model()
   else:
