@@ -13,7 +13,7 @@ class Classifier():
     self.exp_name = exp_name
     self.checkpoint_filepath = os.path.join("../checkpoints/", exp_name)
     self.model = getattr(models, model_name)
-    self.model.compile(optimizer = tf.optimizers.Adam(),
+    self.model.compile(optimizer = tf.keras.optimizers.Adam(),
               loss = 'binary_crossentropy',
               metrics=['accuracy'])
     

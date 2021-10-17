@@ -19,3 +19,18 @@ Example Flow:
 
 python train.py --model-name basic_cnn --checkpoint trial1
 python train.py --checkpoint trial1 --test
+
+Tensorboard:
+
+Local - From the parent directory of the 'orchards' git repository, run:
+
+tensorboard --logdir tensorboard
+
+Open the provided link in a web browser (http://localhost:6006/)
+
+Remote VM
+
+Mount data in VM:
+
+gcloud auth application-default login
+gcsfuse es262-orchards-forests data
