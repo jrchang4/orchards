@@ -52,6 +52,7 @@ class Classifier():
     self.model.evaluate(self.data.val_generator)
 
 def main(args):
+  print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
   data = DataLoader()
   classifier = Classifier(data, model_name=args.model_name,
                           exp_name=args.exp_name, test=args.test)
