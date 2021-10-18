@@ -8,13 +8,13 @@ class DataLoader():
 		data_generator = ImageDataGenerator(rescale=1/255, validation_split = self.split)
 
 		self.train_generator = data_generator.flow_from_directory(
-        data_dir,  # This is the source directory for training images
-        classes = ['ImagesGoogleMapsForests', 'ImagesGoogleMapsOrchards'],
-        target_size=(224, 224),  # All images will be resized to 200x200
-        batch_size=120,
-        # Use binary labels
-        class_mode='binary', 
-        subset = 'training')
+            data_dir,  # This is the source directory for training images
+            classes = ['ImagesGoogleMapsForests', 'ImagesGoogleMapsOrchards'],
+            target_size=(224, 224),  # All images will be resized to 200x200
+            batch_size=120,
+            # Use binary labels
+            class_mode='binary',
+            subset = 'training')
 
 		self.val_generator = data_generator.flow_from_directory(
         data_dir,  # This is the source directory for training images

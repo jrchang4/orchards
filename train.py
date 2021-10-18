@@ -4,6 +4,7 @@ from config import get_args
 import models
 from dataloader import DataLoader
 import os
+import pickle
 
 class Classifier():
   def __init__(self, data, model_name, exp_name,test):
@@ -39,7 +40,35 @@ class Classifier():
         callbacks=[model_checkpoint_callback, tensorboard_callback])
     
     self.eval_model()
-  
+
+  def binary_get_fp_and_fn_filenames(self, val_data):
+      ground_truth = val_data.labels
+      prob_predicted = self.model.predict(val_data)
+
+      #in the multi-class case, we would use np.argmax below
+      binary_predict = [0 if x[0] < 0.5 else 1 for x in prob_predicted]
+      diff = ground_truth - binary_predict
+
+      filepaths = np.array(val_data.filepaths) #Won't work if shuffle was set to true for val_data
+      correct = filepaths[np.where(diff == 0)[0]]
+      fp = filepaths[np.where(diff == -1)[0]]
+      fn = filepaths[np.where(diff == 1)[0]]
+
+      fp_and_fn_filenames = {
+        'Correct': correct,
+        'False positives': fp,
+        'False negatives': fn
+      }
+      pickle.dump(fp_and_fn_filenames, open(os.path.join(self.checkpoint_filepath,
+                                                      'filename_results.p'), 'wb'))
+
+      print_all = False
+      if print_all:
+          print('Correctly classified: ', correct)
+          print('False positives: ', fp)
+          print('False negatives: ', fn)
+
+
   def eval_model(self):
     print("="*80 + "Evaluating model" + "="*80)
     if self.test:
@@ -49,7 +78,13 @@ class Classifier():
       self.model.compile(optimizer = tf.optimizers.Adam(),
               loss = 'binary_crossentropy',
               metrics=['accuracy'])
-    self.model.evaluate(self.data.val_generator)
+
+    val_data = self.data.val_generator
+    self.model.evaluate(val_data)
+    if self.test:
+        self.binary_get_fp_and_fn_filenames(val_data) 
+
+
 
 def main(args):
   print("Num GPUs Available: ", tf.test.is_gpu_available())
