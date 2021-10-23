@@ -1,4 +1,5 @@
 import tensorflow as tf
+from sklearn.metrics import classification_report, confusion_matrix
 import numpy as np
 from config import get_args
 import models
@@ -16,7 +17,7 @@ class Classifier():
     self.model = getattr(models, model_name)
     self.model.compile(optimizer = tf.keras.optimizers.Adam(),
               loss = 'binary_crossentropy',
-              metrics=['accuracy'])
+              metrics=['AUC', 'accuracy'])
     
   def train_model(self, epochs):
     print("="*80 + "Training model" + "="*80)
@@ -32,11 +33,10 @@ class Classifier():
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
     
     history = self.model.fit(self.data.train_generator,
-        steps_per_epoch=8,  
         epochs=epochs,
         verbose=1,
+        class_weight={0: 1., 1: 4.},
         validation_data = self.data.val_generator,
-        validation_steps=8,
         callbacks=[model_checkpoint_callback, tensorboard_callback])
     
     self.eval_model()
@@ -48,12 +48,14 @@ class Classifier():
       #in the multi-class case, we would use np.argmax below
       binary_predict = [0 if x[0] < 0.5 else 1 for x in prob_predicted]
       diff = ground_truth - binary_predict
+      print('Confusion Matrix')
+      print(confusion_matrix(val_data.classes, binary_predict))
 
+      #Get the filepaths for false positives, false negatives, and false positives
       filepaths = np.array(val_data.filepaths) #Won't work if shuffle was set to true for val_data
       correct = filepaths[np.where(diff == 0)[0]]
       fp = filepaths[np.where(diff == -1)[0]]
       fn = filepaths[np.where(diff == 1)[0]]
-
       fp_and_fn_filenames = {
         'Correct': correct,
         'False positives': fp,
@@ -75,20 +77,20 @@ class Classifier():
       print("Restoring model weights from ", self.checkpoint_filepath)
       loaded_model = tf.keras.models.load_model(self.checkpoint_filepath)
       self.model = loaded_model
-      self.model.compile(optimizer = tf.optimizers.Adam(),
+      self.model.compile(optimizer = tf.keras.optimizers.Adam(),
               loss = 'binary_crossentropy',
-              metrics=['accuracy'])
+              metrics=['accuracy', 'AUC'])
 
     val_data = self.data.val_generator
     self.model.evaluate(val_data)
-    if self.test:
-        self.binary_get_fp_and_fn_filenames(val_data) 
 
 
 
 def main(args):
   print("Num GPUs Available: ", tf.test.is_gpu_available())
   data = DataLoader()
+  data.fit()
+
   classifier = Classifier(data, model_name=args.model_name,
                           exp_name=args.exp_name, test=args.test)
   if args.test:

@@ -17,9 +17,9 @@ basic_cnn.add(MaxPool2D())
 basic_cnn.add(Conv2D(32, 3, padding="same", activation="relu"))
 basic_cnn.add(MaxPool2D())
 
+basic_cnn.add(Dropout(0.4))
 basic_cnn.add(Conv2D(64, 3, padding="same", activation="relu"))
 basic_cnn.add(MaxPool2D())
-basic_cnn.add(Dropout(0.4))
 
 basic_cnn.add(Flatten())
 basic_cnn.add(Dense(128,activation="relu"))
@@ -27,54 +27,75 @@ basic_cnn.add(Dense(1, activation="sigmoid"))
 
 
 #1st Convolutional Layer
+# (3) Create a sequential model
 AlexNet = Sequential()
-AlexNet.add(Conv2D(filters=96, input_shape=(224,224,3), kernel_size=(11,11), strides=(4,4), padding='same'))
-AlexNet.add(BatchNormalization())
-AlexNet.add(Activation('relu'))
-AlexNet.add(MaxPool2D(pool_size=(2,2), strides=(2,2), padding='same'))
 
-#2nd Convolutional Layer
-AlexNet.add(Conv2D(filters=256, kernel_size=(5, 5), strides=(1,1), padding='same'))
-AlexNet.add(BatchNormalization())
-AlexNet.add(Activation('relu'))
-AlexNet.add(MaxPool2D(pool_size=(2,2), strides=(2,2), padding='same'))
+# 1st Convolutional Layer
+AlexNet.add(Conv2D(filters=24, input_shape=(224,224,3), kernel_size=3, padding='same', activation="relu"))
+# Pooling
+AlexNet.add(MaxPool2D(pool_size=2))
+# AlexNet.add(Dropout(0.4))
+# Batch Normalisation before passing it to the next layer
+# AlexNet.add(BatchNormalization())
 
-#3rd Convolutional Layer
-AlexNet.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))
-AlexNet.add(BatchNormalization())
-AlexNet.add(Activation('relu'))
 
-#4th Convolutional Layer
-AlexNet.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))
-AlexNet.add(BatchNormalization())
-AlexNet.add(Activation('relu'))
+# 2nd Convolutional Layer
+AlexNet.add(Conv2D(filters=64, kernel_size=3, padding='same', activation='relu'))
+# Pooling
+AlexNet.add(MaxPool2D(pool_size=2))
+# AlexNet.add(Dropout(0.4))
+# Batch Normalisation
+# AlexNet.add(BatchNormalization())
 
-#5th Convolutional Layer
-AlexNet.add(Conv2D(filters=256, kernel_size=(3,3), strides=(1,1), padding='same'))
-AlexNet.add(BatchNormalization())
-AlexNet.add(Activation('relu'))
-AlexNet.add(MaxPool2D(pool_size=(2,2), strides=(2,2), padding='same'))
 
-#Passing it to a Fully Connected layer
+# 3rd Convolutional Layer
+AlexNet.add(Conv2D(filters=96, kernel_size=(3,3), padding='same', activation='relu'))
+# Batch Normalisation
+# AlexNet.add(BatchNormalization())
+
+
+# 4th Convolutional Layer
+AlexNet.add(Conv2D(filters=96, kernel_size=(3,3), padding='same', activation='relu'))
+# AlexNet.add(Dropout(0.4))
+# Batch Normalisation
+# AlexNet.add(BatchNormalization())
+
+
+# 5th Convolutional Layer
+AlexNet.add(Conv2D(filters=64, kernel_size=(3,3), padding='same', activation='relu'))
+# Pooling
+AlexNet.add(MaxPool2D(pool_size=2))
+# AlexNet.add(Dropout(0.4))
+# Batch Normalisation
+# AlexNet.add(BatchNormalization())
+
+
+# Passing it to a dense layer
 AlexNet.add(Flatten())
-# 1st Fully Connected Layer
-AlexNet.add(Dense(4096, activation='relu'))
-AlexNet.add(BatchNormalization())
+
+
+# 1st Dense Layer
+AlexNet.add(Dense(800, activation='relu'))
+# Add Dropout to prevent overfitting
+AlexNet.add(Dropout(0.4))
+# Batch Normalisation
+# AlexNet.add(BatchNormalization())
+
+
+# 2nd Dense Layer
+AlexNet.add(Dense(800, activation='relu'))
 AlexNet.add(Dropout(0.4))
 
-#2nd Fully Connected Layer
-AlexNet.add(Dense(4096))
-AlexNet.add(BatchNormalization())
-AlexNet.add(Activation('relu'))
-AlexNet.add(Dropout(0.4))
+# Add Dropout
+# AlexNet.add(Dropout(0.4))
+# Batch Normalisation
+# AlexNet.add(BatchNormalization())
 
-#3rd Fully Connected Layer
-AlexNet.add(Dense(1000))
-AlexNet.add(BatchNormalization())
-AlexNet.add(Activation('relu'))
-#Add Dropout
-AlexNet.add(Dropout(0.4))
+#  output Layer
+AlexNet.add(Dense(1, activation='sigmoid',
+                  bias_initializer=tf.keras.initializers.Constant(value=-0.55)
+))
 
-#Output Layer
-AlexNet.add(Dense(1, activation="sigmoid")) # would change in the multi-class case
+AlexNet.summary()
+
 
