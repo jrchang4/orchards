@@ -32,41 +32,29 @@ AlexNet = Sequential()
 
 # 1st Convolutional Layer
 AlexNet.add(Conv2D(filters=24, input_shape=(224,224,3), kernel_size=3, padding='same', activation="relu"))
-# Pooling
 AlexNet.add(MaxPool2D(pool_size=2))
-# AlexNet.add(Dropout(0.4))
-# Batch Normalisation before passing it to the next layer
 # AlexNet.add(BatchNormalization())
 
 
 # 2nd Convolutional Layer
 AlexNet.add(Conv2D(filters=64, kernel_size=3, padding='same', activation='relu'))
-# Pooling
 AlexNet.add(MaxPool2D(pool_size=2))
-# AlexNet.add(Dropout(0.4))
-# Batch Normalisation
 # AlexNet.add(BatchNormalization())
 
 
 # 3rd Convolutional Layer
 AlexNet.add(Conv2D(filters=96, kernel_size=(3,3), padding='same', activation='relu'))
-# Batch Normalisation
 # AlexNet.add(BatchNormalization())
 
 
 # 4th Convolutional Layer
 AlexNet.add(Conv2D(filters=96, kernel_size=(3,3), padding='same', activation='relu'))
-# AlexNet.add(Dropout(0.4))
-# Batch Normalisation
 # AlexNet.add(BatchNormalization())
 
 
 # 5th Convolutional Layer
 AlexNet.add(Conv2D(filters=64, kernel_size=(3,3), padding='same', activation='relu'))
-# Pooling
 AlexNet.add(MaxPool2D(pool_size=2))
-# AlexNet.add(Dropout(0.4))
-# Batch Normalisation
 # AlexNet.add(BatchNormalization())
 
 
@@ -76,26 +64,20 @@ AlexNet.add(Flatten())
 
 # 1st Dense Layer
 AlexNet.add(Dense(800, activation='relu'))
-# Add Dropout to prevent overfitting
 AlexNet.add(Dropout(0.4))
-# Batch Normalisation
 # AlexNet.add(BatchNormalization())
 
 
 # 2nd Dense Layer
 AlexNet.add(Dense(800, activation='relu'))
 AlexNet.add(Dropout(0.4))
-
-# Add Dropout
-# AlexNet.add(Dropout(0.4))
-# Batch Normalisation
 # AlexNet.add(BatchNormalization())
 
 #  output Layer
-AlexNet.add(Dense(1, activation='sigmoid',
-                  bias_initializer=tf.keras.initializers.Constant(value=-0.55)
-))
+AlexNet.add(Dense(1, activation='sigmoid'))
 
 AlexNet.summary()
+
+
 
 
