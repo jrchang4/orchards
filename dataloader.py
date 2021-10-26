@@ -37,7 +37,7 @@ class DataLoader():
             subset = 'validation')
             """
         self.train_generator = self.data_generator.flow_from_directory(
-            os.path.join("../data2", "train"),  # This is the source directory for training images
+            os.path.join("../data/data2", "train"),  # This is the source directory for training images
             classes = ['contrast_eq_Forests', 'contrast_eq_OilPalm'],
             target_size=(224, 224),
             batch_size=120,
@@ -47,7 +47,7 @@ class DataLoader():
             #subset = 'training')
 
         self.val_generator = self.data_generator.flow_from_directory(
-            os.path.join("../data2", "val"),  # This is the source directory for training images
+            os.path.join("../data/data2", "val"),  # This is the source directory for training images
             classes = ['contrast_eq_Forests', 'contrast_eq_OilPalm'],
             target_size=(224, 224),
             batch_size=120,
