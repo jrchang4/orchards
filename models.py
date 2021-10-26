@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D , MaxPool2D , Flatten , Dropout, Activation, BatchNormalization
-
+from tensorflow.keras import Model
 
 fully_connected = Sequential([Flatten(input_shape = (224,224,3)), 
                                     Dense(128, activation=tf.nn.relu), 
@@ -79,13 +79,37 @@ AlexNet.add(Dense(1, activation='sigmoid'))
 AlexNet.summary()
 
 
-Xception = tf.keras.applications.Xception(
+xception = tf.keras.applications.Xception(
     include_top=False,
     weights="imagenet",
-    input_tensor=None,
-    input_shape=(224,224,3),
-    pooling=None,
-    classes=2,
-    classifier_activation="softmax",
+    input_shape=(224,224, 3),
 )
+
+for layer in xception.layers:
+  layer.trainable = False
+  
+inceptionv3 = tf.keras.applications.InceptionV3(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
+
+for layer in inceptionv3.layers:
+  layer.trainable = False
+  
+resnet = tf.keras.applications.ResNet50(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
+
+for layer in resnet.layers:
+  layer.trainable = False
+  
+def output_layer(model):
+  # Flatten the output layer to 1 dimension
+  x = Flatten()(model.output)
+  # Add a fully connected layer with 1,024 hidden units and ReLU activation
+  x = Dense(1024, activation='relu')(x)
+  # Add a dropout rate of 0.2
+  x = Dropout(0.2)(x)
+  # Add a final sigmoid layer for classification
+  x = Dense(1, activation='sigmoid')(x)
+  return x
+
+Inception = Model(inceptionv3.input, output_layer(inceptionv3))
+Xception = Model(xception.input, output_layer(xception))
+ResNet = Model(resnet.input, output_layer(resnet))
 
