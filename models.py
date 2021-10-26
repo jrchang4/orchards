@@ -80,7 +80,7 @@ AlexNet.summary()
 
 
 Xception = tf.keras.applications.Xception(
-    include_top=True,
+    include_top=False,
     weights="imagenet",
     input_tensor=None,
     input_shape=(224,224,3),
