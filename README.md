@@ -33,4 +33,3 @@ Remote VM
 Mount data in VM:
 
 gcloud auth application-default login
-gcsfuse --implicit-dirs es262-orchards-forests data
