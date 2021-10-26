@@ -38,7 +38,7 @@ class DataLoader():
             """
         self.train_generator = self.data_generator.flow_from_directory(
             os.path.join("../data/data2", "train"),  # This is the source directory for training images
-            classes = ['contrast_eq_Forests', 'contrast_eq_OilPalm'],
+            classes = ['contrast_eq_forests', 'contrast_eq_OilPalm'],
             target_size=(224, 224),
             batch_size=120,
             # Use binary labels
@@ -48,7 +48,7 @@ class DataLoader():
 
         self.val_generator = self.data_generator.flow_from_directory(
             os.path.join("../data/data2", "val"),  # This is the source directory for training images
-            classes = ['contrast_eq_Forests', 'contrast_eq_OilPalm'],
+            classes = ['contrast_eq_forests', 'contrast_eq_OilPalm'],
             target_size=(224, 224),
             batch_size=120,
             shuffle=False,
