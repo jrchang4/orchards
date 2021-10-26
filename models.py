@@ -79,5 +79,13 @@ AlexNet.add(Dense(1, activation='sigmoid'))
 AlexNet.summary()
 
 
-
+Xception = tf.keras.applications.Xception(
+    include_top=True,
+    weights="imagenet",
+    input_tensor=None,
+    input_shape=None,
+    pooling=None,
+    classes=2,
+    classifier_activation="softmax",
+)
 
