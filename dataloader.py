@@ -10,8 +10,8 @@ class DataLoader():
         self.data_dir = data_dir
         self.split = split
 
-        splitfolders.ratio(data_dir,  "../data2", seed=1337, ratio=(1 - self.split, self.split),
-                           group_prefix=None)  # default values
+        # splitfolders.ratio(data_dir,  "../data2", seed=1337, ratio=(1 - self.split, self.split),
+        #                    group_prefix=None)  # default values
 
         self.data_generator = ImageDataGenerator(rescale=1/255,
                                             horizontal_flip=True,
@@ -38,7 +38,7 @@ class DataLoader():
             """
         self.train_generator = self.data_generator.flow_from_directory(
             os.path.join("../data2", "train"),  # This is the source directory for training images
-            classes = ['ImagesGoogleMapsForests', 'ImagesGoogleMapsOilPalm'],
+            classes = ['contrast_eq_Forests', 'contrast_eq_OilPalm'],
             target_size=(224, 224),
             batch_size=120,
             # Use binary labels
@@ -48,9 +48,10 @@ class DataLoader():
 
         self.val_generator = self.data_generator.flow_from_directory(
             os.path.join("../data2", "val"),  # This is the source directory for training images
-            classes = ['ImagesGoogleMapsForests', 'ImagesGoogleMapsOilPalm'],
+            classes = ['contrast_eq_Forests', 'contrast_eq_OilPalm'],
             target_size=(224, 224),
             batch_size=120,
+            shuffle=False,
             # Use binary labels
             class_mode='binary')
             #subset = 'validation')

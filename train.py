@@ -82,6 +82,7 @@ class Classifier():
               metrics=['accuracy', 'AUC'])
 
     val_data = self.data.val_generator
+    self.binary_get_fp_and_fn_filenames(val_data)
     self.model.evaluate(val_data)
 
 
