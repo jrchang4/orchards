@@ -18,29 +18,24 @@ class Classifier():
     self.model = getattr(models, model_name)
     self.model.compile(optimizer = tf.keras.optimizers.Adam(),
               loss = 'binary_crossentropy',
-              metrics=['AUC', 'accuracy'])
+              metrics=['AUC', 'accuracy', self.recall_m, self.precision_m, self.f1_m])
     
-  def train_model(self, epochs):
-    print("="*80 + "Training model" + "="*80)
-    
-    model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
-    filepath=self.checkpoint_filepath,
-    save_weights_only=False,
-    monitor='val_accuracy',
-    mode='max',
-    save_best_only=True)
-    
-    log_dir = os.path.join("../tensorboard/", self.exp_name)
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
-    
-    history = self.model.fit(self.data.train_generator,
-        epochs=epochs,
-        verbose=1,
-        class_weight={0: 1., 1: 4.},
-        validation_data = self.data.val_generator,
-        callbacks=[model_checkpoint_callback, tensorboard_callback])
-    
-    self.eval_model()
+  def recall_m(y_true, y_pred):
+        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+        possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
+        recall = true_positives / (possible_positives + K.epsilon())
+        return recall
+
+  def precision_m(y_true, y_pred):
+      true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+      predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+      precision = true_positives / (predicted_positives + K.epsilon())
+      return precision
+
+  def f1_m(y_true, y_pred):
+      precision = precision_m(y_true, y_pred)
+      recall = recall_m(y_true, y_pred)
+      return 2*((precision*recall)/(precision+recall+K.epsilon()))
 
   def binary_get_fp_and_fn_filenames(self, val_data):
       ground_truth = val_data.labels
@@ -70,35 +65,39 @@ class Classifier():
           print('Correctly classified: ', correct)
           print('False positives: ', fp)
           print('False negatives: ', fn)
-
+          
+  def train_model(self, epochs):
+    print("="*80 + "Training model" + "="*80)
+    
+    model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath=self.checkpoint_filepath,
+    save_weights_only=False,
+    monitor='val_accuracy',
+    mode='max',
+    save_best_only=True)
+    
+    log_dir = os.path.join("../tensorboard/", self.exp_name)
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    
+    history = self.model.fit(self.data.train_generator,
+        epochs=epochs,
+        verbose=1,
+        class_weight={0: 1., 1: 4.},
+        validation_data = self.data.val_generator,
+        callbacks=[model_checkpoint_callback, tensorboard_callback])
+    
+    self.eval_model()
 
   def eval_model(self):
     print("="*80 + "Evaluating model" + "="*80)
-    
-    def recall_m(y_true, y_pred):
-        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-        possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
-        recall = true_positives / (possible_positives + K.epsilon())
-        return recall
-
-    def precision_m(y_true, y_pred):
-        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-        predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
-        precision = true_positives / (predicted_positives + K.epsilon())
-        return precision
-
-    def f1_m(y_true, y_pred):
-        precision = precision_m(y_true, y_pred)
-        recall = recall_m(y_true, y_pred)
-        return 2*((precision*recall)/(precision+recall+K.epsilon()))
-    
+        
     if self.test:
       print("Restoring model weights from ", self.checkpoint_filepath)
       loaded_model = tf.keras.models.load_model(self.checkpoint_filepath)
       self.model = loaded_model
       self.model.compile(optimizer = tf.keras.optimizers.Adam(),
               loss = 'binary_crossentropy',
-              metrics=['accuracy', 'AUC', recall_m, precision_m, f1_m])
+              metrics=['accuracy', 'AUC', self.recall_m, self.precision_m, self.f1_m])
 
     val_data = self.data.val_generator
     self.binary_get_fp_and_fn_filenames(val_data)
