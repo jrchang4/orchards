@@ -38,7 +38,7 @@ class DataLoader():
             class_mode='binary',
             subset = 'validation')
             """
-        task_class = 'contrast_eq_OilPalm' if task == 'palm' else 'contrast_eq_forests'
+        task_class = 'contrast_eq_OilPalm' if task == 'palm' else 'contrast_eq_orchards'
         
         self.train_generator = self.data_generator.flow_from_directory(
             os.path.join("../data/data2", "train"),  # This is the source directory for training images
