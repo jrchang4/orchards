@@ -6,9 +6,11 @@ import os
 import splitfolders
 
 class DataLoader():
-    def __init__(self, data_dir = "../data/", split = 0.2):
+    def __init__(self, data_dir = "../data/", split = 0.2, batch_size = 64, task = 'full'):
         self.data_dir = data_dir
         self.split = split
+        self.batch_size = batch_size
+        self.task = task
 
         # splitfolders.ratio(data_dir,  "../data2", seed=1337, ratio=(1 - self.split, self.split),
         #                    group_prefix=None)  # default values
@@ -36,11 +38,13 @@ class DataLoader():
             class_mode='binary',
             subset = 'validation')
             """
+        task_class = 'contrast_eq_OilPalm' if task == 'palm' else 'contrast_eq_forests'
+        
         self.train_generator = self.data_generator.flow_from_directory(
             os.path.join("../data/data2", "train"),  # This is the source directory for training images
-            classes = ['contrast_eq_forests', 'contrast_eq_OilPalm'],
+            classes = ['contrast_eq_forests', task_class],
             target_size=(224, 224),
-            batch_size=120,
+            batch_size=self.batch_size,
             # Use binary labels
             class_mode='binary')
             # save_to_dir='/Users/ctoups/Documents/Schoolwork/cs325b/resized',
@@ -48,9 +52,9 @@ class DataLoader():
 
         self.val_generator = self.data_generator.flow_from_directory(
             os.path.join("../data/data2", "val"),  # This is the source directory for training images
-            classes = ['contrast_eq_forests', 'contrast_eq_OilPalm'],
+            classes = ['contrast_eq_forests', task_class],
             target_size=(224, 224),
-            batch_size=120,
+            batch_size=self.batch_size,
             shuffle=False,
             # Use binary labels
             class_mode='binary')

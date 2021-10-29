@@ -7,4 +7,6 @@ def get_args():
     psr.add_argument("--model-name", type=str, default="fully_connected", choices = ["fully_connected", "basic_cnn", "AlexNet", "Xception", "Inception", "ResNet"], help="Model name (in models.py)")
     psr.add_argument("--exp-name", type=str, default= datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), help="Name of the experiment")
     psr.add_argument("--test", action='store_true')
+    psr.add_argument("--batch-size", type=int, default=64, help="Number of batches.")
+    psr.add_argument("--model-name", type=str, default="full", choices = ["full", "palm"], help="Full task Orchards vs Forests, or Palm vs Forests")
     return psr.parse_args()

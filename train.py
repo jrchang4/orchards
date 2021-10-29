@@ -89,7 +89,7 @@ class Classifier():
 
 def main(args):
   print("Num GPUs Available: ", tf.test.is_gpu_available())
-  data = DataLoader()
+  data = DataLoader(batch_size = args.batch_size, task = args.task)
   # data.fit()
 
   classifier = Classifier(data, model_name=args.model_name,
