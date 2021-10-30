@@ -93,7 +93,7 @@ class Classifier():
         
     if self.test:
       print("Restoring model weights from ", self.checkpoint_filepath)
-      loaded_model = tf.keras.models.load_model(self.checkpoint_filepath)
+      loaded_model = tf.keras.models.load_model(self.checkpoint_filepath, custom_objects={'recall_m':self.recall_m, 'precision_m':self.precision_m, 'f1_m':self.f1_m})
       self.model = loaded_model
       self.model.compile(optimizer = tf.keras.optimizers.Adam(),
               loss = 'binary_crossentropy',

@@ -2,7 +2,10 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D , MaxPool2D , Flatten , Dropout, Activation, BatchNormalization
-from tensorflow.keras import Model
+from tensorflow.keras import Model, regularizers
+from config import get_args
+
+args = get_args()
 
 fully_connected = Sequential([Flatten(input_shape = (224,224,3)), 
                                     Dense(128, activation=tf.nn.relu), 
@@ -102,9 +105,11 @@ def output_layer(model):
   # Flatten the output layer to 1 dimension
   x = Flatten()(model.output)
   # Add a fully connected layer with 1,024 hidden units and ReLU activation
-  x = Dense(1024, activation='relu')(x)
+  x = Dense(1024, activation='relu', kernel_regularizer=regularizers.l2(args.reg),
+    bias_regularizer=regularizers.l2(args.reg),
+    activity_regularizer=regularizers.l2(args.reg))(x)
   # Add a dropout rate of 0.2
-  x = Dropout(0.2)(x)
+  x = Dropout(args.dropout)(x)
   # Add a final sigmoid layer for classification
   x = Dense(1, activation='sigmoid')(x)
   return x
