@@ -66,7 +66,7 @@ class Classifier():
           print('False positives: ', fp)
           print('False negatives: ', fn)
           
-  def train_model(self, epochs):
+  def train_model(self, epochs, task):
     print("="*80 + "Training model" + "="*80)
     
     model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
@@ -79,10 +79,11 @@ class Classifier():
     log_dir = os.path.join("../tensorboard/", self.exp_name)
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
     
+    
     history = self.model.fit(self.data.train_generator,
         epochs=epochs,
         verbose=1,
-        class_weight={0: 1., 1: 4.},
+        class_weight= {0: 1., 1: 4.} if task=='palm' else None,
         validation_data = self.data.val_generator,
         callbacks=[model_checkpoint_callback, tensorboard_callback])
     
@@ -115,7 +116,7 @@ def main(args):
   if args.test:
     classifier.eval_model()
   else:
-    classifier.train_model(epochs=args.epochs)
+    classifier.train_model(epochs=args.epochs, task=args.task)
   
 
 if __name__ == '__main__':
