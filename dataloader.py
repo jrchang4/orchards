@@ -13,7 +13,7 @@ class DataLoader():
                                             horizontal_flip=True,
                                             vertical_flip=True)
         self.train_generator = self.data_generator.flow_from_directory(
-            os.path.join("../data2", "train"),  # This is the source directory for training images
+            os.path.join(data_dir, "data2", "train"),  # This is the source directory for training images
             classes = ['ImagesGoogleMapsForests', 'ImagesGoogleMapsOrchards'],
             target_size=(224, 224),
             batch_size=32,
@@ -21,7 +21,7 @@ class DataLoader():
             class_mode='binary')
 
         self.val_generator = self.data_generator.flow_from_directory(
-            os.path.join("../data2", "val"),  # This is the source directory for training images
+            os.path.join(data_dir, "data2", "val"),  # This is the source directory for training images
             classes = ['ImagesGoogleMapsForests', 'ImagesGoogleMapsOrchards'],
             target_size=(224, 224),
             batch_size=32,
