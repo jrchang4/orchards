@@ -35,7 +35,6 @@ class Classifier():
     history = self.model.fit(self.data.train_generator,
         epochs=epochs,
         verbose=1,
-        class_weight={0: 1., 1: 4.},
         validation_data = self.data.val_generator,
         callbacks=[model_checkpoint_callback, tensorboard_callback])
     
@@ -90,7 +89,6 @@ class Classifier():
 def main(args):
   print("Num GPUs Available: ", tf.test.is_gpu_available())
   data = DataLoader()
-  #data.fit()
 
   classifier = Classifier(data, model_name=args.model_name,
                           exp_name=args.exp_name, test=args.test)
