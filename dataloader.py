@@ -16,7 +16,7 @@ class DataLoader():
             os.path.join("../data2", "train"),  # This is the source directory for training images
             classes = ['ImagesGoogleMapsForests', 'ImagesGoogleMapsOrchards'],
             target_size=(224, 224),
-            batch_size=64,
+            batch_size=32,
             # Use binary labels
             class_mode='binary')
 
@@ -24,7 +24,7 @@ class DataLoader():
             os.path.join("../data2", "val"),  # This is the source directory for training images
             classes = ['ImagesGoogleMapsForests', 'ImagesGoogleMapsOrchards'],
             target_size=(224, 224),
-            batch_size=64,
+            batch_size=32,
             shuffle=False,
             # Use binary labels
             class_mode='binary')
