@@ -3,58 +3,31 @@ import numpy as np
 from PIL import Image
 from pathlib import Path
 import os
-import splitfolders
 
 class DataLoader():
     def __init__(self, data_dir = "../data/", split = 0.2):
         self.data_dir = data_dir
         self.split = split
 
-        # splitfolders.ratio(data_dir,  "../data2", seed=1337, ratio=(1 - self.split, self.split),
-        #                    group_prefix=None)  # default values
-
         self.data_generator = ImageDataGenerator(rescale=1/255,
                                             horizontal_flip=True,
                                             vertical_flip=True)
-
-        """self.train_generator = self.data_generator.flow_from_directory(
-            data_dir,  # This is the source directory for training images
-            classes = ['fake_negative', 'fake_positive'],
-            target_size=(224, 224),  # All images will be resized to 200x200
-            batch_size=120,
-            # Use binary labels
-            class_mode='binary',
-            # save_to_dir='/Users/ctoups/Documents/Schoolwork/cs325b/resized',
-            subset = 'training')
-
-        self.val_generator = self.data_generator.flow_from_directory(
-            data_dir,  # This is the source directory for training images
-            classes = ['fake_negative', 'fake_positive'],
-            target_size=(224, 224),  # All images will be resized to 200x200
-            batch_size=120,
-            # Use binary labels
-            class_mode='binary',
-            subset = 'validation')
-            """
         self.train_generator = self.data_generator.flow_from_directory(
             os.path.join("../data2", "train"),  # This is the source directory for training images
             classes = ['ImagesGoogleMapsForests', 'ImagesGoogleMapsOrchards'],
             target_size=(224, 224),
-            batch_size=120,
+            batch_size=64,
             # Use binary labels
             class_mode='binary')
-            # save_to_dir='/Users/ctoups/Documents/Schoolwork/cs325b/resized',
-            #subset = 'training')
 
         self.val_generator = self.data_generator.flow_from_directory(
             os.path.join("../data2", "val"),  # This is the source directory for training images
             classes = ['ImagesGoogleMapsForests', 'ImagesGoogleMapsOrchards'],
             target_size=(224, 224),
-            batch_size=120,
+            batch_size=64,
             shuffle=False,
             # Use binary labels
             class_mode='binary')
-            #subset = 'validation')
 
     #Used this when I was playing around with featurewise_center=True in ImageDataGenerator
     def fit(self):
