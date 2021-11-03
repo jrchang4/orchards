@@ -20,6 +20,28 @@ class Classifier():
               loss = 'binary_crossentropy',
               metrics=['AUC', 'accuracy', self.recall_m, self.precision_m, self.f1_m])
     
+
+  def train_model(self, epochs):
+    print("="*80 + "Training model" + "="*80)
+    
+    model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath=self.checkpoint_filepath,
+    save_weights_only=False,
+    monitor='val_accuracy',
+    mode='max',
+    save_best_only=True)
+    
+    log_dir = os.path.join("../tensorboard/", self.exp_name)
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    
+    history = self.model.fit(self.data.train_generator,
+        epochs=epochs,
+        verbose=1,
+        validation_data = self.data.val_generator,
+        callbacks=[model_checkpoint_callback, tensorboard_callback])
+    
+    self.eval_model()
+
   def recall_m(self, y_true, y_pred):
         true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
         possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
@@ -36,6 +58,7 @@ class Classifier():
       precision = self.precision_m(y_true, y_pred)
       recall = self.recall_m(y_true, y_pred)
       return 2*((precision*recall)/(precision+recall+K.epsilon()))
+
 
   def binary_get_fp_and_fn_filenames(self, val_data):
       ground_truth = val_data.labels
@@ -108,9 +131,8 @@ class Classifier():
 
 def main(args):
   print("Num GPUs Available: ", tf.test.is_gpu_available())
-  data = DataLoader(batch_size = args.batch_size, task = args.task)
-  # data.fit()
 
+  data = DataLoader(batch_size = args.batch_size, task = args.task)
   classifier = Classifier(data, model_name=args.model_name,
                           exp_name=args.exp_name, test=args.test)
   if args.test:
