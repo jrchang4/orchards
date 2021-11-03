@@ -17,8 +17,8 @@ Must include a checkpoint to load the model to test (just checkpoint name, not e
 
 Example Flow:
 
-python train.py --model-name basic_cnn --checkpoint trial1
-python train.py --checkpoint trial1 --test
+python train.py --model-name basic_cnn --exp-name trial1
+python train.py --exp-name trial1 --test
 
 Tensorboard:
 
@@ -33,4 +33,5 @@ Remote VM
 Mount data in VM:
 
 gcloud auth application-default login
+
 gcsfuse --implicit-dirs es262-orchards-forests data
