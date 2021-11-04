@@ -1,54 +1,54 @@
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import tensorflow as tf
+import numpy as np
+from PIL import Image
+from pathlib import Path
+import os
+
 class DataLoader():
-<<<<<<< HEAD
-    def __init__(self, data_dir = "../", split = .2):#"../test/data2/", split = 0.2): 
-                self.data_dir = data_dir
-                self.split = split
+    def __init__(self, data_dir = "../data/", split = 0.2, batch_size = 64, task = 'full'):
+        self.data_dir = data_dir
+        self.split = split
+        self.batch_size = batch_size
+        self.task = task
 
-                data_generator = TifDataGenerator()#rescale=1/255, validation_split = self.split)
+        self.data_generator = ImageDataGenerator(rescale=1/255,
+                                            horizontal_flip=True,
+                                            vertical_flip=True)
 
-                self.train_generator = data_generator.flow_from_directory(
-        data_dir,#+'train/',  # This is the source directory for training images
-        #classes = ['imagesGoogleMapsForests', 'imagesGoogleMapsOrchards'],
-        classes = ['planetSinglesForests','planetSinglesOrchards'],
-        target_size=(224, 224),  # All images will be resized to 200x200
-        batch_size=30,
-=======
-	def __init__(self, data_dir = "../", split = 0.2): #"~/es262-cloud/"
-		self.data_dir = data_dir
-		self.split = split
+        task_class = 'contrast_eq_OilPalm' if task == 'palm' else 'contrast_eq_orchards'
+        
+        self.train_generator = self.data_generator.flow_from_directory(
+            os.path.join(data_dir, "data2", "train"),  # This is the source directory for training images
+            classes = ['contrast_eq_forests', task_class],
+            target_size=(224, 224),
+            batch_size=self.batch_size,
+            # Use binary labels
+            class_mode='binary')
 
-		data_generator = TifDataGenerator()#rescale=1/255, validation_split = self.split)
+        self.val_generator = self.data_generator.flow_from_directory(
+            os.path.join(data_dir, "data2", "val"),  # This is the source directory for training images
+            classes = ['contrast_eq_forests', task_class],
+            target_size=(224, 224),
+            batch_size=self.batch_size,
+            shuffle=False,
+            # Use binary labels
+            class_mode='binary')
 
-		self.train_generator = data_generator.flow_from_directory(
-        data_dir,  # This is the source directory for training images
-        #classes = ['imagesGoogleMapsForests', 'imagesGoogleMapsOrchards'],
-        classes = ['planetImageryCentroidForests','planetImageryCentroidOrchards'],
-	target_size=(224, 224),  # All images will be resized to 200x200
-        batch_size=120,
->>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
-        # Use binary labels
-        class_mode='binary', 
-        subset = 'training')
+    #Used this when I was playing around with featurewise_center=True in ImageDataGenerator
+    def fit(self):
+        self.data_generator.fit(load_all_images(
+            os.path.join(self.data_dir, "ImagesGoogleMapsForests"), 224, 224))
 
-<<<<<<< HEAD
-                self.val_generator = data_generator.flow_from_directory(
-        data_dir,#+'val/',  # This is the source directory for training images
-        #classes = ['imagesGoogleMapsForests', 'imagesGoogleMapsOrchards'],
-        classes = ['planetSinglesForests','planetSinglesOrchards'],
-=======
-		self.val_generator = data_generator.flow_from_directory(
-        data_dir,  # This is the source directory for training images
-        #classes = ['imagesGoogleMapsForests', 'imagesGoogleMapsOrchards'],
-	classes = ['planetImageryCentroidForests','planetImageryCentroidOrchards'],
->>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
-        target_size=(224, 224),  # All images will be resized to 200x200
-        batch_size=30,
-        # Use binary labels
-        class_mode='binary', 
-        subset = 'validation',
-        shuffle = False)
+
+def read_pil_image(img_path, height, width):
+    with open(img_path, 'rb') as f:
+        return np.array(Image.open(f).convert('RGB').resize((width, height)))
+
+def load_all_images(dataset_path, height, width, img_ext='jpg'):
+    return np.array([read_pil_image(str(p), height, width) for p in
+                     Path(dataset_path).rglob("*." + img_ext)])
+
 
 
 class TifDataGenerator(tf.keras.preprocessing.image.ImageDataGenerator):
@@ -97,33 +97,7 @@ class TifDataGenerator(tf.keras.preprocessing.image.ImageDataGenerator):
                  data_format='channels_last',
                  validation_split=0.2,
                  dtype='float32')
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
-  #def __init__(self,
-       #          preprocessing_function=None,
-        #         data_format='channels_last',
-         #        validation_split=20.0):
-                #self.df = df.copy()
-                #self.X_col = X_col
-                #self.y_col = y_col
-                #self.batch_size = batch_size
-         #       self.input_size = input_size
-<<<<<<< HEAD
-         #       self.shuffle = shuffle
-         #       self.n = len(self.df)
-         #       self.n_name = df[y_col['name']].nunique()
-         #       self.n_type = df[y_col['type']].nunique()
-
-=======
-         #       self.shuffle = shuffle            
-         #       self.n = len(self.df)
-         #       self.n_name = df[y_col['name']].nunique()
-         #       self.n_type = df[y_col['type']].nunique()
-           
->>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
         def read_image(path, rescale=None):
                 key="{},{}".format(path,rescale)
                 if key in read_image_cache:
@@ -169,22 +143,8 @@ class TifDataGenerator(tf.keras.preprocessing.image.ImageDataGenerator):
                 raise ImportError('Could not import PIL.Image. '
                                   'The use of `load_img` requires PIL.')
             with open(path, 'rb') as f:
-<<<<<<< HEAD
 
-=======
-                
->>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
-
-        #        img = pil_image.open(io.BytesIO(f.read()))
                 img = read_image(f)
-                #if time_series == True:
-<<<<<<< HEAD
-                #    continue
-=======
-                #    continue                    
->>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
-                #else:
-                #    raise ValueError('time_series was specified false')
                 if target_size is not None:
                     width_height_tuple = (target_size[1], target_size[0])
                     if img.size != width_height_tuple:
@@ -199,18 +159,3 @@ class TifDataGenerator(tf.keras.preprocessing.image.ImageDataGenerator):
             return img
 
 
-<<<<<<< HEAD
-=======
-        '''def __get_input(self, path, bbox, target_size):
-                xmin, ymin, w, h = bbox['x'], bbox['y'], bbox['width'], bbox['height']
-
-                image = tf.keras.preprocessing.image.load_tif(path)
-                image_arr = tf.keras.preprocessing.image.img_to_array(image)
-
-                image_arr = image_arr[ymin:ymin+h, xmin:xmin+w]
-                image_arr = tf.image.resize(image_arr,(target_size[0], target_size[1])).numpy()
-
-                return image_arr/255.
-         '''
-
->>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
