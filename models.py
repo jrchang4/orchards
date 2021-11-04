@@ -13,15 +13,7 @@ args = get_args()
 from keras import backend as K
 K.set_image_data_format('channels_last')
 
-from config import get_args
-
-args = get_args()
-
-from keras import backend as K
-K.set_image_data_format('channels_first')
-
-
-fully_connected = Sequential([Flatten(input_shape = (224,224,28)), 
+fully_connected = Sequential([Flatten(input_shape = (224,224,3)), 
                                     Dense(128, activation=tf.nn.relu), 
                                     Dense(1, activation=tf.nn.sigmoid)])
 
