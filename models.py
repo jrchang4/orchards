@@ -16,15 +16,22 @@ from config import get_args
 
 args = get_args()
 
+from keras import backend as K
+K.set_image_data_format('channels_first')
 
-fully_connected = Sequential([Flatten(input_shape = (224,224,3)), 
+
+fully_connected = Sequential([Flatten(input_shape = (224,224,28)), 
                                     Dense(128, activation=tf.nn.relu), 
                                     Dense(1, activation=tf.nn.sigmoid)])
 
 
 
 basic_cnn = Sequential()
+<<<<<<< HEAD
 basic_cnn.add(Conv2D(32,3,padding="same", activation="relu", input_shape=(224,224,3)))
+=======
+basic_cnn.add(Conv2D(32,3,padding="same", activation="relu", input_shape=(224,224,28)))
+>>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
 basic_cnn.add(MaxPool2D((2,2), padding='same'))
 
 basic_cnn.add(Conv2D(32, 3, padding="same", activation="relu"))
@@ -38,10 +45,15 @@ basic_cnn.add(Flatten())
 basic_cnn.add(Dense(128,activation="relu"))
 basic_cnn.add(Dense(1, activation="sigmoid"))
 
+<<<<<<< HEAD
 
 
 vgg_conv = Sequential()
 vgg_conv.add(Conv2D(16, 4, padding="same", activation="relu", input_shape=(224,224,3)))
+=======
+vgg_conv = Sequential()
+vgg_conv.add(Conv2D(16, 4, padding="same", activation="relu", input_shape=(224,224,28)))
+>>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
 
 vgg_conv.add(Conv2D(16, 4, padding="same", activation="relu"))
 vgg_conv.add(MaxPool2D((2,2), padding='same'))
@@ -71,6 +83,7 @@ vgg_conv.add(Flatten())
 vgg_conv.add(Dense(512, activation='relu'))
 vgg_conv.add(Dense(256))
 vgg_conv.add(Dense(64))
+<<<<<<< HEAD
 vgg_conv.add(Flatten())
 
 
@@ -157,6 +170,16 @@ ResNet = Model(resnet.input, output_layer(resnet))
 #d11 = Linear(csize*2*128,512)
 #d12 = Linear(512, 256)
 #d13 = Linear(256,64)
+=======
+vgg_conv.add(Dense(1, activation="sigmoid"))
+
+#sat_feat = vgg_conv(planet_imgs)
+
+>>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
 
 
+#csize = np.int(np.floor(sat_psize/32))
+#d11 = Linear(csize*2*128,512)
+#d12 = Linear(512, 256)
+#d13 = Linear(256,64)
 

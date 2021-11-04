@@ -1,6 +1,7 @@
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import tensorflow as tf
 class DataLoader():
+<<<<<<< HEAD
     def __init__(self, data_dir = "../", split = .2):#"../test/data2/", split = 0.2): 
                 self.data_dir = data_dir
                 self.split = split
@@ -13,14 +14,35 @@ class DataLoader():
         classes = ['planetSinglesForests','planetSinglesOrchards'],
         target_size=(224, 224),  # All images will be resized to 200x200
         batch_size=30,
+=======
+	def __init__(self, data_dir = "../", split = 0.2): #"~/es262-cloud/"
+		self.data_dir = data_dir
+		self.split = split
+
+		data_generator = TifDataGenerator()#rescale=1/255, validation_split = self.split)
+
+		self.train_generator = data_generator.flow_from_directory(
+        data_dir,  # This is the source directory for training images
+        #classes = ['imagesGoogleMapsForests', 'imagesGoogleMapsOrchards'],
+        classes = ['planetImageryCentroidForests','planetImageryCentroidOrchards'],
+	target_size=(224, 224),  # All images will be resized to 200x200
+        batch_size=120,
+>>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
         # Use binary labels
         class_mode='binary', 
         subset = 'training')
 
+<<<<<<< HEAD
                 self.val_generator = data_generator.flow_from_directory(
         data_dir,#+'val/',  # This is the source directory for training images
         #classes = ['imagesGoogleMapsForests', 'imagesGoogleMapsOrchards'],
         classes = ['planetSinglesForests','planetSinglesOrchards'],
+=======
+		self.val_generator = data_generator.flow_from_directory(
+        data_dir,  # This is the source directory for training images
+        #classes = ['imagesGoogleMapsForests', 'imagesGoogleMapsOrchards'],
+	classes = ['planetImageryCentroidForests','planetImageryCentroidOrchards'],
+>>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
         target_size=(224, 224),  # All images will be resized to 200x200
         batch_size=30,
         # Use binary labels
@@ -75,7 +97,11 @@ class TifDataGenerator(tf.keras.preprocessing.image.ImageDataGenerator):
                  data_format='channels_last',
                  validation_split=0.2,
                  dtype='float32')
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
   #def __init__(self,
        #          preprocessing_function=None,
         #         data_format='channels_last',
@@ -85,11 +111,19 @@ class TifDataGenerator(tf.keras.preprocessing.image.ImageDataGenerator):
                 #self.y_col = y_col
                 #self.batch_size = batch_size
          #       self.input_size = input_size
+<<<<<<< HEAD
          #       self.shuffle = shuffle
          #       self.n = len(self.df)
          #       self.n_name = df[y_col['name']].nunique()
          #       self.n_type = df[y_col['type']].nunique()
 
+=======
+         #       self.shuffle = shuffle            
+         #       self.n = len(self.df)
+         #       self.n_name = df[y_col['name']].nunique()
+         #       self.n_type = df[y_col['type']].nunique()
+           
+>>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
         def read_image(path, rescale=None):
                 key="{},{}".format(path,rescale)
                 if key in read_image_cache:
@@ -135,12 +169,20 @@ class TifDataGenerator(tf.keras.preprocessing.image.ImageDataGenerator):
                 raise ImportError('Could not import PIL.Image. '
                                   'The use of `load_img` requires PIL.')
             with open(path, 'rb') as f:
+<<<<<<< HEAD
 
+=======
+                
+>>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
 
         #        img = pil_image.open(io.BytesIO(f.read()))
                 img = read_image(f)
                 #if time_series == True:
+<<<<<<< HEAD
                 #    continue
+=======
+                #    continue                    
+>>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b
                 #else:
                 #    raise ValueError('time_series was specified false')
                 if target_size is not None:
@@ -157,3 +199,18 @@ class TifDataGenerator(tf.keras.preprocessing.image.ImageDataGenerator):
             return img
 
 
+<<<<<<< HEAD
+=======
+        '''def __get_input(self, path, bbox, target_size):
+                xmin, ymin, w, h = bbox['x'], bbox['y'], bbox['width'], bbox['height']
+
+                image = tf.keras.preprocessing.image.load_tif(path)
+                image_arr = tf.keras.preprocessing.image.img_to_array(image)
+
+                image_arr = image_arr[ymin:ymin+h, xmin:xmin+w]
+                image_arr = tf.image.resize(image_arr,(target_size[0], target_size[1])).numpy()
+
+                return image_arr/255.
+         '''
+
+>>>>>>> c891d9a41be2f4a3fc086c636af20209723d693b

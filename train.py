@@ -6,6 +6,7 @@ from dataloader import DataLoader
 import os
 from iterator import Iterator
 
+
 class Classifier():
   def __init__(self, data, model_name, exp_name,test):
 
@@ -15,7 +16,7 @@ class Classifier():
     self.checkpoint_filepath = os.path.join("../checkpoints/", exp_name)
     self.model = getattr(models, model_name)
     self.model.compile(optimizer = tf.keras.optimizers.Adam(),
-              loss = 'binary_crossentropy',
+              loss = 'categorical_crossentropy',
               metrics=['accuracy'])
     
   def train_model(self, epochs):
@@ -31,11 +32,11 @@ class Classifier():
     log_dir = os.path.join("../tensorboard/", self.exp_name)
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
     
-    history = self.model.fit(self.data.train_generator,
+    history = self.model.fit(self.data.train_generator, ###
         steps_per_epoch=8,  
         epochs=epochs,
         verbose=1,
-        validation_data = self.data.val_generator,
+        validation_data = self.data.val_generator, ####
         validation_steps=8,
         callbacks=[model_checkpoint_callback, tensorboard_callback])
     
@@ -48,9 +49,9 @@ class Classifier():
       loaded_model = tf.keras.models.load_model(self.checkpoint_filepath)
       self.model = loaded_model
       self.model.compile(optimizer = tf.optimizers.Adam(),
-              loss = 'binary_crossentropy',
+              loss = 'categorical_crossentropy',
               metrics=['accuracy'])
-    self.model.evaluate(self.data.val_generator)
+    self.model.evaluate(self.data.val_generator) #####
 
 def main(args):
   print("Num GPUs Available: ", tf.test.is_gpu_available())
