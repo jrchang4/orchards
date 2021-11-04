@@ -10,5 +10,5 @@ def get_args():
     psr.add_argument("--batch-size", type=int, default=64, help="Number of batches.")
     psr.add_argument("--task", type=str, default="full", choices = ["full", "palm"], help="Full task Orchards vs Forests, or Palm vs Forests")
     psr.add_argument("--dropout", type=float, default=0.2, help="Dropout percentage.")
-    psr.add_argument("--reg", type=float, default=0.1, help="Regularization constraint.")
+    psr.add_argument("--reg", type=float, default=0.0, help="Regularization constraint.")
     return psr.parse_args()
