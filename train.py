@@ -4,6 +4,7 @@ from config import get_args
 import models
 from dataloader import DataLoader
 import os
+from iterator import Iterator
 
 class Classifier():
   def __init__(self, data, model_name, exp_name,test):
