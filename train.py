@@ -37,7 +37,7 @@ class Classifier():
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
     
 
-    history = self.model.fit(self.data.train_generator,
+    history = self.model.fit([self.data.train_generator,self.data.train_generator],
         epochs=epochs,
         verbose=1,
         validation_data = self.data.val_generator,
