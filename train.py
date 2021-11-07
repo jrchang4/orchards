@@ -6,6 +6,7 @@ from config import get_args
 import models
 from dataloader import DataLoader
 import os
+from iterator import Iterator
 import pickle
 
 class Classifier():
@@ -19,6 +20,7 @@ class Classifier():
     self.model.compile(optimizer = tf.keras.optimizers.Adam(),
               loss = 'binary_crossentropy',
               metrics=['AUC', 'accuracy', self.recall_m, self.precision_m, self.f1_m])
+
     
 
   def train_model(self, epochs):
@@ -34,6 +36,7 @@ class Classifier():
     log_dir = os.path.join("../tensorboard/", self.exp_name)
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
     
+
     history = self.model.fit(self.data.train_generator,
         epochs=epochs,
         verbose=1,
@@ -126,8 +129,6 @@ class Classifier():
     val_data = self.data.val_generator
     self.binary_get_fp_and_fn_filenames(val_data)
     self.model.evaluate(val_data)
-
-
 
 def main(args):
   print("Num GPUs Available: ", tf.test.is_gpu_available())
