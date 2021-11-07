@@ -1,6 +1,6 @@
 import tensorflow as tf
 from sklearn.metrics import classification_report, confusion_matrix
-from keras import backend as K
+from tensorflow.keras import backend as K
 import numpy as np
 from config import get_args
 import models
@@ -9,11 +9,12 @@ import os
 import pickle
 
 class Classifier():
-  def __init__(self, data, model_name, exp_name,test):
+  def __init__(self, data, model_name, exp_name,test, reload):
 
     self.data = data
     self.test = test
     self.exp_name = exp_name
+    self.reload = reload
     self.checkpoint_filepath = os.path.join("../checkpoints/", exp_name)
     self.model = getattr(models, model_name)
     self.model.compile(optimizer = tf.keras.optimizers.Adam(),
@@ -101,8 +102,14 @@ class Classifier():
     
     log_dir = os.path.join("../tensorboard/", self.exp_name)
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
-    
-    
+
+    if self.reload:
+        loaded_model = tf.keras.models.load_model(self.checkpoint_filepath)
+        self.model = loaded_model
+        self.model.compile(optimizer=tf.keras.optimizers.Adam(),
+                           loss='binary_crossentropy',
+                           metrics=['accuracy', 'AUC', self.recall_m, self.precision_m, self.f1_m])
+
     history = self.model.fit(self.data.train_generator,
         epochs=epochs,
         verbose=1,
@@ -134,7 +141,7 @@ def main(args):
 
   data = DataLoader(batch_size = args.batch_size, task = args.task)
   classifier = Classifier(data, model_name=args.model_name,
-                          exp_name=args.exp_name, test=args.test)
+                          exp_name=args.exp_name, test=args.test, reload=args.reload)
   if args.test:
     classifier.eval_model()
   else:
