@@ -26,8 +26,8 @@ class DataLoader():
             class_mode='binary')
 
         self.val_generator = self.data_generator.flow_from_directory(
-            os.path.join(data_dir, "data2", "val"),  # This is the source directory for training images
-            classes = ['contrast_eq_forests', task_class],
+            os.path.join(data_dir, "TechnoserveImagery", "val"),  # This is the source directory for training images
+            classes = ['ImagesGoogleMapsForests', "ImagesGoogleMapsCashewsGreater2HectTechnoserve"],
             target_size=(224, 224),
             batch_size=self.batch_size,
             shuffle=False,
