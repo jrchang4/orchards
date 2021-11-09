@@ -1,6 +1,6 @@
 import tensorflow as tf
 from sklearn.metrics import classification_report, confusion_matrix
-from keras import backend as K
+from tensorflow.keras import backend as K
 import numpy as np
 from config import get_args
 import models
@@ -8,6 +8,12 @@ from dataloader import DataLoader
 import os
 from iterator import Iterator
 import pickle
+
+
+def combine_gen(*gens):
+    while True:
+        for g in gens:
+            yield next(g)
 
 class Classifier():
   def __init__(self, data, model_name, exp_name,test):
@@ -23,27 +29,6 @@ class Classifier():
 
     
 
-  def train_model(self, epochs):
-    print("="*80 + "Training model" + "="*80)
-    
-    model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
-    filepath=self.checkpoint_filepath,
-    save_weights_only=False,
-    monitor='val_accuracy',
-    mode='max',
-    save_best_only=True)
-    
-    log_dir = os.path.join("../tensorboard/", self.exp_name)
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
-    
-
-    history = self.model.fit(self.data.train_generator,
-        epochs=epochs,
-        verbose=1,
-        validation_data = self.data.val_generator,
-        callbacks=[model_checkpoint_callback, tensorboard_callback])
-    
-    self.eval_model()
 
   def recall_m(self, y_true, y_pred):
         true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
@@ -105,8 +90,8 @@ class Classifier():
     log_dir = os.path.join("../tensorboard/", self.exp_name)
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
     
-    
-    history = self.model.fit(self.data.train_generator,
+    history = self.model.fit(combine_gen(self.data.train_generator1, self.data.train_generator2),
+        steps_per_epoch=len(self.data.train_generator1) + len(self.data.train_generator2),
         epochs=epochs,
         verbose=1,
         class_weight= {0: 1., 1: 4.} if task=='palm' else None,

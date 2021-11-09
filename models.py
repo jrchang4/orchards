@@ -1,16 +1,16 @@
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Input, Conv2D , MaxPool2D , Flatten , Dropout, Activation, BatchNormalization
+from tensorflow.keras.layers import Concatenate, Dense, Input, Conv2D , MaxPool2D , Flatten , Dropout, Activation, BatchNormalization
 from tensorflow.keras.models import Model
 from tensorflow.keras import regularizers, layers
-from keras.layers import Concatenate
+from tensorflow.keras import backend as K
+
 from config import get_args
 
 args = get_args()
 
 
-from keras import backend as K
 K.set_image_data_format('channels_last')
 
 fully_connected = Sequential([Flatten(input_shape = (224,224,3)), 
