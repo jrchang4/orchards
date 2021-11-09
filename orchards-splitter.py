@@ -5,13 +5,13 @@ from PIL import Image
 #from osgeo import gdal
 import rasterio as rs
 
-path = Path("../test/planetImageryForestsGreater2Hect").rglob("*.tif")
-out_path = "../planetSinglesForests" 
+path = Path("../test/planetImageryOrchardsGreater2Hect").rglob("*.tif")
+out_path = "../planetSinglesOrchards" 
 for img_p in path:
     #if str(img_p[36:-4]) < 'way308294349':
     #    if img_p[36] != 'r':
     #        continue
-    m1img_out_path = out_path +  str(img_p)[40:-4]+'m1'+str(img_p)[-4:]
+    m1img_out_path = out_path +  str(img_p)[41:-4]+'m1'+str(img_p)[-4:]
 
     '''
     m2img_out_path = out_path +  str(img_p)[31:-4]+'m2'+str(img_p)[-4:]
