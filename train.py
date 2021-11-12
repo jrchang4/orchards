@@ -1,6 +1,7 @@
 import tensorflow as tf
 from sklearn.metrics import classification_report, confusion_matrix
 from tensorflow.keras import backend as K
+from tensorflow.keras.utils import Sequence
 import numpy as np
 from config import get_args
 import models
@@ -10,10 +11,21 @@ from iterator import Iterator
 import pickle
 
 
-def combine_gen(*gens):
-    while True:
-        for g in gens:
-            yield next(g)
+# def combine_gen(*gens):
+#     while True:
+#         for g in gens:
+#             yield next(g)
+
+class MergedGenerators(Sequence):
+    def __init__(self, *generators):
+        self.generators = generators
+        # TODO add a check to verify that all generators have the same length
+
+    def __len__(self):
+        return len(self.generators[0])
+
+    def __getitem__(self, index):
+        return [generator[index] for generator in self.generators]
 
 class Classifier():
   def __init__(self, data, model_name, exp_name,test):
@@ -104,11 +116,11 @@ class Classifier():
     log_dir = os.path.join("../tensorboard/", self.exp_name)
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
     
-    history = self.model.fit(combine_gen(self.data.train_generator1, self.data.train_generator2),
+    history = self.model.fit(MergedGenerators(self.data.train_generator1, self.data.train_generator2),
         steps_per_epoch=len(self.data.train_generator1) + len(self.data.train_generator2),
         epochs=epochs,
         verbose=1,
-        validation_data = combine_gen(self.data.val_generator1, self.data.val_generator2),
+        validation_data = MergedGenerators(self.data.val_generator1, self.data.val_generator2),
         callbacks=[model_checkpoint_callback, tensorboard_callback])
     
     self.eval_model()
@@ -124,7 +136,7 @@ class Classifier():
               loss = 'binary_crossentropy',
               metrics=['accuracy', 'AUC', self.recall_m, self.precision_m, self.f1_m])
 
-    val_data = combine_gen(self.data.val_generator1, self.data.val_generator2)
+    val_data = MergedGenerators(self.data.val_generator1, self.data.val_generator2)
     self.binary_get_fp_and_fn_filenames(val_data)
     self.model.evaluate(val_data)
 
