@@ -15,8 +15,7 @@ class DataLoader():
 
         self.data_generator = ImageDataGenerator(rescale=1/255,
                                             horizontal_flip=True,
-                                            vertical_flip=True,
-                                            validation_split=self.split)
+                                            vertical_flip=True)
 
 
         self.train_generator1 = self.data_generator.flow_from_directory(

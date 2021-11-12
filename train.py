@@ -48,6 +48,17 @@ class Classifier():
       return 2*((precision*recall)/(precision+recall+K.epsilon()))
 
 
+  def binary_get_fp_and_fn_filenames(self, val_data1, val_data2):
+    c_matrix1, fp_and_fn_filenames1 = self.binary_get_fp_and_fn_filenames(val_data1)
+    c_matrix2, fp_and_fn_filenames2 = self.binary_get_fp_and_fn_filenames(val_data2)
+
+    combined = {}
+    for type in fp_and_fn_filenames1.keys():
+        combined[type] = fp_and_fn_filenames1[type]
+        combined[type].extend(fp_and_fn_filenames2[type])
+
+    pickle.dump(combined, open(os.path.join(self.checkpoint_filepath, 'filename_results.p'), 'wb'))
+
   def binary_get_fp_and_fn_filenames(self, val_data):
       ground_truth = val_data.labels
       prob_predicted = self.model.predict(val_data)
@@ -56,7 +67,8 @@ class Classifier():
       binary_predict = [0 if x[0] < 0.5 else 1 for x in prob_predicted]
       diff = ground_truth - binary_predict
       print('Confusion Matrix')
-      print(confusion_matrix(val_data.classes, binary_predict))
+      c_matrix = confusion_matrix(val_data.classes, binary_predict)
+      print(c_matrix)
 
       #Get the filepaths for false positives, false negatives, and false positives
       filepaths = np.array(val_data.filepaths) #Won't work if shuffle was set to true for val_data
@@ -68,14 +80,16 @@ class Classifier():
         'False positives': fp,
         'False negatives': fn
       }
-      pickle.dump(fp_and_fn_filenames, open(os.path.join(self.checkpoint_filepath,
-                                                      'filename_results.p'), 'wb'))
 
-      print_all = False
-      if print_all:
-          print('Correctly classified: ', correct)
-          print('False positives: ', fp)
-          print('False negatives: ', fn)
+      return c_matrix, fp_and_fn_filenames
+      # pickle.dump(fp_and_fn_filenames, open(os.path.join(self.checkpoint_filepath,
+          #                                            'filename_results.p'), 'wb'))
+
+      # print_all = False
+      # if print_all:
+      #     print('Correctly classified: ', correct)
+      #     print('False positives: ', fp)
+      #     print('False negatives: ', fn)
           
   def train_model(self, epochs, task):
     print("="*80 + "Training model" + "="*80)
