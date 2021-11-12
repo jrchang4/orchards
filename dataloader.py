@@ -20,7 +20,7 @@ class DataLoader():
 
         self.train_generator1 = self.data_generator.flow_from_directory(
             os.path.join(data_dir, "data2", "train"),  # This is the source directory for training images
-            classes = ['ImagesGoogleMapsForestsGreater2Hect', "ImagesGoogleMapsOrchardsGreater2Hect"],
+            classes = ['ImagesGoogleMapsForests', "ImagesGoogleMapsOrchards"],
             target_size=(224, 224),
             batch_size=self.batch_size,
             # Use binary labels
@@ -28,7 +28,7 @@ class DataLoader():
 
         self.train_generator2 = self.data_generator.flow_from_directory(
             os.path.join(data_dir, "GoogleMapsNewImagery", "train"),  # This is the source directory for training images
-            classes = ['ImagesGoogleMapsForestsGreater2Hect', "ImagesGoogleMapsOrchardsGreater2Hect"],
+            classes = ['imagesGoogleMapsForestsGreater2Hect', "imagesGoogleMapsOrchardsGreater2Hect"],
             target_size=(224, 224),
             batch_size=self.batch_size,
             # Use binary labels
@@ -36,7 +36,7 @@ class DataLoader():
 
         self.val_generator1 = self.data_generator.flow_from_directory(
             os.path.join(data_dir, "data2", "val"),  # This is the source directory for training images
-            classes = ['ImagesGoogleMapsForestsGreater2Hect', "ImagesGoogleMapsOrchardsGreater2Hect"],
+            classes = ['ImagesGoogleMapsForests', "ImagesGoogleMapsOrchards"],
             target_size=(224, 224),
             batch_size=self.batch_size,
             shuffle=False,
@@ -45,7 +45,7 @@ class DataLoader():
 
         self.val_generator2 = self.data_generator.flow_from_directory(
             os.path.join(data_dir, "GoogleMapsNewImagery", "val"),  # This is the source directory for training images
-            classes = ['ImagesGoogleMapsForestsGreater2Hect', "ImagesGoogleMapsOrchardsGreater2Hect"],
+            classes = ['imagesGoogleMapsForestsGreater2Hect', "imagesGoogleMapsOrchardsGreater2Hect"],
             target_size=(224, 224),
             batch_size=self.batch_size,
             shuffle=False,
