@@ -95,7 +95,7 @@ class Classifier():
         epochs=epochs,
         verbose=1,
         class_weight= {0: 1., 1: 4.} if task=='palm' else None,
-        validation_data = self.data.val_generator,
+        validation_data = combine_gen(self.data.val_generator1, self.data.val_generator2),
         callbacks=[model_checkpoint_callback, tensorboard_callback])
     
     self.eval_model()
@@ -111,7 +111,7 @@ class Classifier():
               loss = 'binary_crossentropy',
               metrics=['accuracy', 'AUC', self.recall_m, self.precision_m, self.f1_m])
 
-    val_data = self.data.val_generator
+    val_data = combine_gen(self.data.val_generator1, self.data.val_generator2)
     self.binary_get_fp_and_fn_filenames(val_data)
     self.model.evaluate(val_data)
 

@@ -18,18 +18,17 @@ class DataLoader():
                                             vertical_flip=True,
                                             validation_split=self.split)
 
-        task_class = 'contrast_eq_OilPalm' if task == 'palm' else 'contrast_eq_orchards'
-        
+
         self.train_generator1 = self.data_generator.flow_from_directory(
             os.path.join(data_dir, "data2", "train"),  # This is the source directory for training images
-            classes = ['contrast_eq_forests', task_class],
+            classes = ['ImagesGoogleMapsForestsGreater2Hect', "ImagesGoogleMapsOrchardsGreater2Hect"],
             target_size=(224, 224),
             batch_size=self.batch_size,
             # Use binary labels
             class_mode='binary')
 
         self.train_generator2 = self.data_generator.flow_from_directory(
-            os.path.join(data_dir),  # This is the source directory for training images
+            os.path.join(data_dir, "GoogleMapsNewImagery", "train"),  # This is the source directory for training images
             classes = ['ImagesGoogleMapsForestsGreater2Hect', "ImagesGoogleMapsOrchardsGreater2Hect"],
             target_size=(224, 224),
             batch_size=self.batch_size,
@@ -37,14 +36,24 @@ class DataLoader():
             class_mode='binary',
             subset='training')
 
-        self.val_generator = self.data_generator.flow_from_directory(
+        self.val_generator1 = self.data_generator.flow_from_directory(
             os.path.join(data_dir, "data2", "val"),  # This is the source directory for training images
-            classes = ['contrast_eq_forests', task_class],
+            classes = ['ImagesGoogleMapsForestsGreater2Hect', "ImagesGoogleMapsOrchardsGreater2Hect"],
             target_size=(224, 224),
             batch_size=self.batch_size,
             shuffle=False,
             # Use binary labels
             class_mode='binary')
+
+        self.val_generator2 = self.data_generator.flow_from_directory(
+            os.path.join(data_dir, "GoogleMapsNewImagery", "val"),  # This is the source directory for training images
+            classes = ['ImagesGoogleMapsForestsGreater2Hect', "ImagesGoogleMapsOrchardsGreater2Hect"],
+            target_size=(224, 224),
+            batch_size=self.batch_size,
+            shuffle=False,
+            # Use binary labels
+            class_mode='binary')
+
 
 
 class TifDataGenerator(tf.keras.preprocessing.image.ImageDataGenerator):
