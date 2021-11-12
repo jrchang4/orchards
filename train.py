@@ -94,7 +94,6 @@ class Classifier():
         steps_per_epoch=len(self.data.train_generator1) + len(self.data.train_generator2),
         epochs=epochs,
         verbose=1,
-        class_weight= {0: 1., 1: 4.} if task=='palm' else None,
         validation_data = combine_gen(self.data.val_generator1, self.data.val_generator2),
         callbacks=[model_checkpoint_callback, tensorboard_callback])
     

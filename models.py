@@ -146,11 +146,18 @@ def output_layer(model):
   # Flatten the output layer to 1 dimension
   x = Flatten()(model.output)
   # Add a fully connected layer with 1,024 hidden units and ReLU activation
-  x = Dense(1024, activation='relu', kernel_regularizer=regularizers.l2(args.reg),
+  x = Dense(800, activation='relu', kernel_regularizer=regularizers.l2(args.reg),
     bias_regularizer=regularizers.l2(args.reg),
     activity_regularizer=regularizers.l2(args.reg))(x)
   # Add a dropout rate of 0.2
   x = Dropout(args.dropout)(x)
+
+  x = Dense(800, activation='relu', kernel_regularizer=regularizers.l2(args.reg),
+    bias_regularizer=regularizers.l2(args.reg),
+    activity_regularizer=regularizers.l2(args.reg))(x)
+  # Add a dropout rate of 0.2
+  x = Dropout(args.dropout)(x)
+
   # Add a final sigmoid layer for classification
   x = Dense(1, activation='sigmoid')(x)
   return x
