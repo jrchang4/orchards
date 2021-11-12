@@ -13,12 +13,17 @@ class DataLoader():
         self.batch_size = batch_size
         self.task = task
 
-        self.data_generator = ImageDataGenerator(rescale=1/255,
+        self.data_generator1 = ImageDataGenerator(rescale=1/255,
+                                            horizontal_flip=True,
+                                            vertical_flip=True)
+
+        self.data_generator2 = ImageDataGenerator(rescale=1/255,
                                             horizontal_flip=True,
                                             vertical_flip=True)
 
 
-        self.train_generator1 = self.data_generator.flow_from_directory(
+
+        self.train_generator1 = self.data_generator1.flow_from_directory(
             os.path.join(data_dir, "data2", "train"),  # This is the source directory for training images
             classes = ['ImagesGoogleMapsForests', "ImagesGoogleMapsOrchards"],
             target_size=(224, 224),
@@ -26,7 +31,7 @@ class DataLoader():
             # Use binary labels
             class_mode='binary')
 
-        self.train_generator2 = self.data_generator.flow_from_directory(
+        self.train_generator2 = self.data_generator2.flow_from_directory(
             os.path.join(data_dir, "GoogleMapsNewImagery", "train"),  # This is the source directory for training images
             classes = ['imagesGoogleMapsForestsGreater2Hect', "imagesGoogleMapsOrchardsGreater2Hect"],
             target_size=(224, 224),
@@ -34,7 +39,7 @@ class DataLoader():
             # Use binary labels
             class_mode='binary')
 
-        self.val_generator1 = self.data_generator.flow_from_directory(
+        self.val_generator1 = self.data_generator1.flow_from_directory(
             os.path.join(data_dir, "data2", "val"),  # This is the source directory for training images
             classes = ['ImagesGoogleMapsForests', "ImagesGoogleMapsOrchards"],
             target_size=(224, 224),
@@ -43,7 +48,7 @@ class DataLoader():
             # Use binary labels
             class_mode='binary')
 
-        self.val_generator2 = self.data_generator.flow_from_directory(
+        self.val_generator2 = self.data_generator2.flow_from_directory(
             os.path.join(data_dir, "GoogleMapsNewImagery", "val"),  # This is the source directory for training images
             classes = ['imagesGoogleMapsForestsGreater2Hect', "imagesGoogleMapsOrchardsGreater2Hect"],
             target_size=(224, 224),
