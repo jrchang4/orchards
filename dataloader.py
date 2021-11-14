@@ -6,7 +6,7 @@ from pathlib import Path
 import os
 
 class DataLoader():
-    def __init__(self, data_dir = "../", split = 0.2, batch_size = 64, task = 'planet'):
+    def __init__(self, data_dir = "../test/combined/", split = 0.2, batch_size = 64, task = 'planet'):
         self.data_dir = data_dir
         self.split = split
         self.batch_size = batch_size
@@ -14,25 +14,25 @@ class DataLoader():
 
         self.data_generator = ImageDataGenerator(rescale=1/255,
                                             horizontal_flip=True,
-                                            vertical_flip=True, validation_split = self.split)
+                                            vertical_flip=True)#, validation_split = self.split)
         if task == 'planet':
                     
             self.train_generator = self.data_generator.flow_from_directory(
-                os.path.join(data_dir),#, "data2"),#, "train"),  # This is the source directory for training images
-                classes = ['planetSinglesForests', 'planetSinglesOrchards'],#['planetSplitForests/train', 'planetSplitOrchards/train'],
+                os.path.join(data_dir,  "train"),#, "data2"),#, "train"),  # This is the source directory for training images
+                classes = ['combinedPlanetForests', 'combinedPlanetOrchards'],#['planetSplitForests/train', 'planetSplitOrchards/train'],
                 target_size=(224, 224),
                 batch_size=self.batch_size,
                 # Use binary labels
-                class_mode='binary',
-                subset='training')
+                class_mode='binary')
+                #subset='training')
 
             self.val_generator = self.data_generator.flow_from_directory(
-                os.path.join(data_dir),#, "data2"),#, "val"),  # This is the source directory for training images
-                classes = ['planetSinglesForests', 'planetSinglesOrchards'],#['planetSplitForests/val', 'planetSplitOrchards/val'],
+                os.path.join(data_dir, "val"),#, "data2"),#, "val"),  # This is the source directory for training images
+                classes = ['combinedPlanetForests', 'combinedPlanetOrchards'],#['planetSplitForests/val', 'planetSplitOrchards/val'],
                 target_size=(224, 224),
                 batch_size=self.batch_size,
                 shuffle=False,
-                subset='validation',
+                #subset='validation',
                 # Use binary labels
                 class_mode='binary')
 

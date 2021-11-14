@@ -162,7 +162,7 @@ ResNet = Model(resnet.input, output_layer(resnet))
 
 
 
-planet_input = Input(shape=(224,224,3), name='planet_input')
+#planet_input = Input(shape=(224,224,3), name='planet_input')
 def output_layer_multi(model, planet_features):
   # Flatten the output layer to 1 dimension
   x = Flatten()(model.output)
