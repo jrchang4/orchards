@@ -109,7 +109,6 @@ class Classifier():
     history = self.model.fit(self.data.train_generator,
         epochs=epochs,
         verbose=1,
-        class_weight= {0: 1., 1: 4.} if task=='palm' else None,
         validation_data = self.data.val_generator,
         callbacks=[model_checkpoint_callback, tensorboard_callback])
     

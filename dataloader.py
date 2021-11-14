@@ -16,19 +16,17 @@ class DataLoader():
                                             horizontal_flip=True,
                                             vertical_flip=True)
 
-        task_class = 'contrast_eq_OilPalm' if task == 'palm' else 'contrast_eq_orchards'
-        
         self.train_generator = self.data_generator.flow_from_directory(
-            os.path.join(data_dir, "data2", "train"),  # This is the source directory for training images
-            classes = ['contrast_eq_forests', task_class],
+            os.path.join(data_dir, "combined", "train"),  # This is the source directory for training images
+            classes = ['combinedGoogleMapsForests', "combinedGoogleMapsOrchards"],
             target_size=(224, 224),
             batch_size=self.batch_size,
             # Use binary labels
             class_mode='binary')
 
         self.val_generator = self.data_generator.flow_from_directory(
-            os.path.join(data_dir, "data2", "val"),  # This is the source directory for training images
-            classes = ['contrast_eq_forests', task_class],
+            os.path.join(data_dir, "combined", "val"),  # This is the source directory for training images
+            classes = ['combinedGoogleMapsForests', "combinedGoogleMapsOrchards"],
             target_size=(224, 224),
             batch_size=self.batch_size,
             shuffle=False,
