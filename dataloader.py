@@ -6,7 +6,80 @@ from pathlib import Path
 import os
 
 class DataLoader():
-    def __init__(self, data_dir = "../test/combined/", split = 0.2, batch_size = 64, task = 'planet'):
+    def __init__(self, data_dir = "../", split = 0.2, batch_size = 64, task = 'planet'):
+        self.data_dir = data_dir
+        self.split = split
+        self.batch_size = batch_size
+        self.task = task
+
+        self.data_generator = ImageDataGenerator(rescale=1/255,
+                                            horizontal_flip=True,
+                                            vertical_flip=True)
+        if task == 'planet':
+                    
+            self.train_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir, "planet", "train"),  # This is the source directory for training images
+                classes = ['combinedPlanetForests', 'combinedPlanetOrchards'],#['planetSplitForests/train', 'planetSplitOrchards/train'],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                # Use binary labels
+                class_mode='binary')
+
+            self.val_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir, "planet", "val"),  # This is the source directory for training images
+                classes = ['combinedPlanetForests', 'combinedPlanetOrchards'],#['planetSplitForests/val', 'planetSplitOrchards/val'],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                shuffle=False,
+                # Use binary labels
+                class_mode='binary')
+
+        elif task == 'planet-small':
+             
+            self.data_generator = ImageDataGenerator(rescale=1/255,
+                                            horizontal_flip=True,
+                                            vertical_flip=True, validation_split = split)       
+            self.train_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir),#, "data2"),#, "train"),  # This is the source directory for training images
+                classes = ['planetSinglesForests', 'planetSinglesOrchards'],#['planetSplitForests/train', 'planetSplitOrchards/train'],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                # Use binary labels
+                class_mode='binary',
+                subset='training')
+
+            self.val_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir),#, "data2"),#, "val"),  # This is the source directory for training images
+                classes = ['planetSinglesForests', 'planetSinglesOrchards'],#['planetSplitForests/val', 'planetSplitOrchards/val'],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                shuffle=False,
+                subset='validation',
+                # Use binary labels
+                class_mode='binary')
+
+
+        else:
+            task_class = 'contrast_eq_OilPalm' if task == 'palm' else 'contrast_eq_orchards'
+            
+            self.train_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir, "data2", "train"),  # This is the source directory for training images
+                classes = ['contrast_eq_forests', task_class],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                # Use binary labels
+                class_mode='binary')
+
+            self.val_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir, "data2", "val"),  # This is the source directory for training images
+                classes = ['contrast_eq_forests', task_class],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                shuffle=False,
+                # Use binary labels
+                class_mode='binary')
+    '''
+    def __init__(self, data_dir = "../planet/", split = 0.2, batch_size = 64, task = 'planet'):
         self.data_dir = data_dir
         self.split = split
         self.batch_size = batch_size
@@ -55,7 +128,7 @@ class DataLoader():
                 shuffle=False,
                 # Use binary labels
                 class_mode='binary')
-
+    '''
     #Used this when I was playing around with featurewise_center=True in ImageDataGenerator
     def fit(self):
         self.data_generator.fit(load_all_images(
