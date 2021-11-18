@@ -80,21 +80,23 @@ AlexNet.add(Dense(1, activation='sigmoid'))
 
 AlexNet.summary()
 
-
+##### XCEPTION #####
 xception = tf.keras.applications.Xception(
     include_top=False,
     weights="imagenet",
-    input_shape=(224,224, 3),
+    input_shape=(224,224, 3)
 )
 
 for layer in xception.layers:
   layer.trainable = False
-  
+
+##### INCEPTION #####
 inceptionv3 = tf.keras.applications.InceptionV3(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
 
 for layer in inceptionv3.layers:
   layer.trainable = False
-  
+
+##### RESNET #####
 resnet = tf.keras.applications.ResNet50(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
 
 for layer in resnet.layers:
@@ -102,6 +104,7 @@ for layer in resnet.layers:
   
 def output_layer(model):
   # Flatten the output layer to 1 dimension
+  model = model(training=False) #will this work. Probs not, but apparently important for BatchNorm reasons?
   x = Flatten()(model.output)
   # Add a first fully connected layer with 800 hidden units and ReLU activation
   x = Dense(800, activation='relu', kernel_regularizer=regularizers.l2(args.reg),

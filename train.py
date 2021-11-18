@@ -1,4 +1,5 @@
 import tensorflow as tf
+from tensorflow import keras
 from sklearn.metrics import classification_report, confusion_matrix
 from tensorflow.keras import backend as K
 import numpy as np
@@ -9,7 +10,7 @@ import os
 import pickle
 
 class Classifier():
-  def __init__(self, data, model_name, exp_name,test, reload):
+  def __init__(self, data, model_name, exp_name, test, reload, fine_tune):
 
     self.data = data
     self.test = test
@@ -20,6 +21,7 @@ class Classifier():
     self.model.compile(optimizer = tf.keras.optimizers.Adam(),
               loss = 'binary_crossentropy',
               metrics=['AUC', 'accuracy', self.recall_m, self.precision_m, self.f1_m])
+    self.fine_tune = fine_tune
     
 
   def train_model(self, epochs):
@@ -116,7 +118,19 @@ class Classifier():
         class_weight= {0: 1., 1: 4.} if task=='palm' else None,
         validation_data = self.data.val_generator,
         callbacks=[model_checkpoint_callback, tensorboard_callback])
-    
+
+    if self.fine_tune:
+        for layer in self.model.layers:
+            layer.trainable = True
+        self.model.compile(
+            optimizer=keras.optimizers.Adam(1e-5),  # Low learning rate
+            loss='binary_crossentropy',
+            metrics=['accuracy', 'AUC', self.recall_m, self.precision_m, self.f1_m],
+        )
+
+        epochs = 10
+        self.model.fit(self.data.train_generator, epochs=epochs, validation_data=self.data.val_generator)
+
     self.eval_model()
 
   def eval_model(self):
@@ -141,7 +155,7 @@ def main(args):
 
   data = DataLoader(batch_size = args.batch_size, task = args.task)
   classifier = Classifier(data, model_name=args.model_name,
-                          exp_name=args.exp_name, test=args.test, reload=args.reload)
+                          exp_name=args.exp_name, test=args.test, reload=args.reload, fine_tune=args.fine_tune)
   if args.test:
     classifier.eval_model()
   else:
