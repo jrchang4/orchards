@@ -104,7 +104,6 @@ for layer in resnet.layers:
   
 def output_layer(model):
   # Flatten the output layer to 1 dimension
-  model = model(training=False) #will this work. Probs not, but apparently important for BatchNorm reasons?
   x = Flatten()(model.output)
   # Add a first fully connected layer with 800 hidden units and ReLU activation
   x = Dense(800, activation='relu', kernel_regularizer=regularizers.l2(args.reg),
@@ -124,6 +123,6 @@ def output_layer(model):
   return x
 
 Inception = Model(inceptionv3.input, output_layer(inceptionv3))
-Xception = Model(xception.input, output_layer(xception))
+Xception = Model(xception.input, output_layer(xception), training=False)
 ResNet = Model(resnet.input, output_layer(resnet))
 
