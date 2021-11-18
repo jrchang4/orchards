@@ -123,6 +123,6 @@ def output_layer(model):
   return x
 
 Inception = Model(inceptionv3.input, output_layer(inceptionv3))
-Xception = Model(xception.input, output_layer(xception), training=False)
+Xception = Model(xception.input, output_layer(xception))
 ResNet = Model(resnet.input, output_layer(resnet))
 
