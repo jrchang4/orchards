@@ -22,7 +22,7 @@ class DataLoader():
                                             vertical_flip=True)
 
         #task_class = 'contrast_eq_OilPalm' if task == 'palm' else 'contrast_eq_orchards'
-        combined = False
+        combined = True
         if combined:
             classes = ['combinedGoogleMapsForests', 'combinedGoogleMapsOrchards']
             data_dir = "../data/combined"
