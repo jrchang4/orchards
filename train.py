@@ -112,8 +112,8 @@ class Classifier():
                            loss='binary_crossentropy',
                            metrics=['accuracy', 'AUC', self.recall_m, self.precision_m, self.f1_m])
 
-    train_data = self.data.train_generator()
-    val_data = self.data.val_generator()
+    train_data = self.data.train_generator
+    val_data = self.data.val_generator
     history = self.model.fit(train_data,
         epochs=epochs,
         verbose=1,
