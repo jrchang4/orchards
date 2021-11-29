@@ -109,7 +109,7 @@ class Classifier():
         loaded_model = tf.keras.models.load_model(self.checkpoint_filepath)
         self.model = loaded_model
         self.model.compile(optimizer=tf.keras.optimizers.Adam(),
-                           loss='binary_crossentropy',
+                           loss='binary_crossent2ropy',
                            metrics=['accuracy', 'AUC', self.recall_m, self.precision_m, self.f1_m])
 
     train_data = self.data.train_generator

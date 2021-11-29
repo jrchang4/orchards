@@ -78,7 +78,7 @@ AlexNet.add(Dropout(0.4))
 #  output Layer
 AlexNet.add(Dense(1, activation='sigmoid'))
 
-AlexNet.summary()
+#AlexNet.summary()
 
 ##### XCEPTION #####
 xception = tf.keras.applications.Xception(
