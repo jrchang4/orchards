@@ -11,5 +11,7 @@ def get_args():
     psr.add_argument("--task", type=str, default="full", choices = ["full", "palm"], help="Full task Orchards vs Forests, or Palm vs Forests")
     psr.add_argument("--dropout", type=float, default=0.2, help="Dropout percentage.")
     psr.add_argument("--reg", type=float, default=0.1, help="Regularization constraint.")
+    psr.add_argument("--fine-tune", action="store_true", help="Fine Tune Model")
+
 
     return psr.parse_args()
