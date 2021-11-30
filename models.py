@@ -187,7 +187,7 @@ def output_layer_multi(model1, model2):
   x = Dense(1, activation='sigmoid')(x)
   return x
 
-Multimodal = Model([inceptionv3.input, planet_input], output_layer_multi(inceptionv3, inceptionv3))
+Multimodal = Model([inceptionv3.input, xception.input], output_layer_multi(inceptionv3, inceptionv3))
 #[inceptionv3.input, planet_input]
 
 #sat_feat = vgg_conv(planet_imgs)
