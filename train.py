@@ -101,6 +101,9 @@ class Classifier():
     
     # x_train,y_train = self.data.separate_data(self.data.train_generator)
     # x_val, y_val = self.data.separate_data(self.data.val_generator)
+    print("Restoring model weights from ", self.checkpoint_filepath)
+    loaded_model = tf.keras.models.load_model(self.checkpoint_filepath, custom_objects={'recall_m':self.recall_m, 'precision_m':self.precision_m, 'f1_m':self.f1_m})
+    self.model = loaded_model
     
     if self.fine_tune:
         for layer in self.model.layers:
