@@ -12,6 +12,8 @@ def get_args():
     psr.add_argument("--dropout", type=float, default=0.2, help="Dropout percentage.")
     psr.add_argument("--reg", type=float, default=0.1, help="Regularization constraint.")
     psr.add_argument("--fine-tune", action="store_true", help="Fine Tune Model")
+    psr.add_argument("--checkpoint", type=str, default= None, help="checkpoint to load model")
+
 
 
     return psr.parse_args()

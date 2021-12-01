@@ -11,14 +11,14 @@ import itertools
 import pickle
 
 class Classifier():
-  def __init__(self, data, model_name, exp_name,test, batch_size, fine_tune):
+  def __init__(self, data, model_name, exp_name,test, batch_size, fine_tune, checkpoint):
 
     self.data = data
     self.test = test
     self.exp_name = exp_name
     self.batch_size = batch_size
     self.model_name = model_name
-    self.checkpoint_filepath = os.path.join("../checkpoints/", exp_name)
+    self.checkpoint_filepath = os.path.join("../checkpoints/", checkpoint if checkpoint else exp_name)
     self.model = getattr(models, model_name)
     self.model.compile(optimizer = tf.keras.optimizers.Adam(),
               loss = 'binary_crossentropy',
@@ -161,7 +161,7 @@ def main(args):
 
   data = DataLoader(batch_size = args.batch_size, task = args.task)
   classifier = Classifier(data, model_name=args.model_name,
-          exp_name=args.exp_name, test=args.test, batch_size = args.batch_size, fine_tune = args.fine_tune)
+          exp_name=args.exp_name, test=args.test, batch_size = args.batch_size, fine_tune = args.fine_tune, checkpoint = args.checkpoint)
   if args.test:
     classifier.eval_model()
   else:
