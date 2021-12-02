@@ -18,7 +18,7 @@ class Classifier():
     self.exp_name = exp_name
     self.batch_size = batch_size
     self.model_name = model_name
-    self.checkpoitn = checkpoint
+    self.checkpoint = checkpoint
     self.checkpoint_filepath = os.path.join("../checkpoints/", checkpoint if checkpoint else exp_name)
     self.model = getattr(models, model_name)
     self.model.compile(optimizer = tf.keras.optimizers.Adam(),
