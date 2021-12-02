@@ -18,6 +18,7 @@ class Classifier():
     self.exp_name = exp_name
     self.batch_size = batch_size
     self.model_name = model_name
+    self.checkpoitn = checkpoint
     self.checkpoint_filepath = os.path.join("../checkpoints/", checkpoint if checkpoint else exp_name)
     self.model = getattr(models, model_name)
     self.model.compile(optimizer = tf.keras.optimizers.Adam(),
@@ -101,9 +102,29 @@ class Classifier():
     
     # x_train,y_train = self.data.separate_data(self.data.train_generator)
     # x_val, y_val = self.data.separate_data(self.data.val_generator)
-    print("Restoring model weights from ", self.checkpoint_filepath)
-    loaded_model = tf.keras.models.load_model(self.checkpoint_filepath, custom_objects={'recall_m':self.recall_m, 'precision_m':self.precision_m, 'f1_m':self.f1_m})
-    self.model = loaded_model
+    
+    if self.checkpoint:
+        print("Restoring model weights from ", self.checkpoint_filepath)
+        loaded_model = tf.keras.models.load_model(self.checkpoint_filepath, custom_objects={'recall_m':self.recall_m, 'precision_m':self.precision_m, 'f1_m':self.f1_m})
+        self.model = loaded_model
+    else:
+        if self.model_name == 'Multimodal':
+          history = self.model.fit_generator(self.data.generate_multiple(self.data.multi_train_google, self.data.multi_train_planet),
+                  steps_per_epoch=self.data.multi_train_google.samples//self.batch_size,
+              epochs=epochs,
+              verbose=1,
+              class_weight= {0: 1., 1: 4.} if task=='palm' else None,
+              validation_data = self.data.generate_multiple(self.data.multi_val_google, self.data.multi_val_planet),
+              validation_steps=(self.data.multi_val_google.samples//self.batch_size),
+              callbacks=[model_checkpoint_callback, tensorboard_callback])
+        
+        else:
+            history = self.model.fit(self.data.train_generator,
+            epochs=epochs,
+            verbose=1,
+            validation_data = self.data.val_generator,
+            callbacks=[model_checkpoint_callback, tensorboard_callback])
+    
     
     if self.fine_tune:
         for layer in self.model.layers:
@@ -116,22 +137,22 @@ class Classifier():
 
         epochs = 10
 
-    if self.model_name == 'Multimodal':
-      history = self.model.fit_generator(self.data.generate_multiple(self.data.multi_train_google, self.data.multi_train_planet),
-              steps_per_epoch=self.data.multi_train_google.samples//self.batch_size,
-          epochs=epochs,
-          verbose=1,
-          class_weight= {0: 1., 1: 4.} if task=='palm' else None,
-          validation_data = self.data.generate_multiple(self.data.multi_val_google, self.data.multi_val_planet),
-          validation_steps=(self.data.multi_val_google.samples//self.batch_size),
-          callbacks=[model_checkpoint_callback, tensorboard_callback])
-    
-    else:
-        history = self.model.fit(self.data.train_generator,
-        epochs=epochs,
-        verbose=1,
-        validation_data = self.data.val_generator,
-        callbacks=[model_checkpoint_callback, tensorboard_callback])
+        if self.model_name == 'Multimodal':
+          history = self.model.fit_generator(self.data.generate_multiple(self.data.multi_train_google, self.data.multi_train_planet),
+                  steps_per_epoch=self.data.multi_train_google.samples//self.batch_size,
+              epochs=epochs,
+              verbose=1,
+              class_weight= {0: 1., 1: 4.} if task=='palm' else None,
+              validation_data = self.data.generate_multiple(self.data.multi_val_google, self.data.multi_val_planet),
+              validation_steps=(self.data.multi_val_google.samples//self.batch_size),
+              callbacks=[model_checkpoint_callback, tensorboard_callback])
+        
+        else:
+            history = self.model.fit(self.data.train_generator,
+            epochs=epochs,
+            verbose=1,
+            validation_data = self.data.val_generator,
+            callbacks=[model_checkpoint_callback, tensorboard_callback])
     
     self.eval_model()
 
