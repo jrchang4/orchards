@@ -24,7 +24,6 @@ class Classifier():
               metrics=['AUC', 'accuracy', self.recall_m, self.precision_m, self.f1_m])
     self.fine_tune = fine_tune
 
-
   def train_model(self, epochs):
     print("="*80 + "Training model" + "="*80)
     
