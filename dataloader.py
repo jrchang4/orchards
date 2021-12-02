@@ -40,7 +40,7 @@ class DataLoader():
             class_mode='binary')
 
         self.val_generator = self.data_generator.flow_from_directory(
-            os.path.join(data_dir, "train"),  # This is the source directory for training images
+            os.path.join(data_dir, "val"),  # This is the source directory for training images
             classes = classes,
             target_size=(224, 224),
             batch_size=self.batch_size,
