@@ -1,6 +1,7 @@
 import tensorflow as tf
+from tensorflow import keras
 from sklearn.metrics import classification_report, confusion_matrix
-from keras import backend as K
+from tensorflow.keras import backend as K
 import numpy as np
 from config import get_args
 import models
@@ -10,18 +11,18 @@ from iterator import Iterator
 import pickle
 
 class Classifier():
-  def __init__(self, data, model_name, exp_name,test):
+  def __init__(self, data, model_name, exp_name, test, reload, fine_tune):
 
     self.data = data
     self.test = test
     self.exp_name = exp_name
+    self.reload = reload
     self.checkpoint_filepath = os.path.join("../checkpoints/", exp_name)
     self.model = getattr(models, model_name)
     self.model.compile(optimizer = tf.keras.optimizers.Adam(),
               loss = 'binary_crossentropy',
               metrics=['AUC', 'accuracy', self.recall_m, self.precision_m, self.f1_m])
-
-    
+    self.fine_tune = fine_tune
 
   def train_model(self, epochs):
     print("="*80 + "Training model" + "="*80)
@@ -104,15 +105,38 @@ class Classifier():
     
     log_dir = os.path.join("../tensorboard/", self.exp_name)
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
-    
-    
-    history = self.model.fit(self.data.train_generator,
+
+    if self.reload:
+        loaded_model = tf.keras.models.load_model(self.checkpoint_filepath)
+        self.model = loaded_model
+        self.model.compile(optimizer=tf.keras.optimizers.Adam(),
+                           loss='binary_crossent2ropy',
+                           metrics=['accuracy', 'AUC', self.recall_m, self.precision_m, self.f1_m])
+
+    train_data = self.data.train_generator
+    val_data = self.data.val_generator
+    history = self.model.fit(train_data,
         epochs=epochs,
         verbose=1,
-        class_weight= {0: 1., 1: 4.} if task=='palm' else None,
-        validation_data = self.data.val_generator,
+        validation_data = val_data,
         callbacks=[model_checkpoint_callback, tensorboard_callback])
-    
+
+    if self.fine_tune:
+        for layer in self.model.layers:
+            layer.trainable = True
+        self.model.compile(
+            optimizer=keras.optimizers.Adam(1e-5),  # Low learning rate
+            loss='binary_crossentropy',
+            metrics=['accuracy', 'AUC', self.recall_m, self.precision_m, self.f1_m],
+        )
+
+        epochs = 10
+        self.model.fit(train_data,
+                       epochs=epochs,
+                       verbose=1,
+                       validation_data=val_data,
+                       callbacks=[model_checkpoint_callback, tensorboard_callback])
+
     self.eval_model()
 
   def eval_model(self):
@@ -135,7 +159,7 @@ def main(args):
 
   data = DataLoader(batch_size = args.batch_size, task = args.task)
   classifier = Classifier(data, model_name=args.model_name,
-                          exp_name=args.exp_name, test=args.test)
+                          exp_name=args.exp_name, test=args.test, reload=args.reload, fine_tune=args.fine_tune)
   if args.test:
     classifier.eval_model()
   else:
