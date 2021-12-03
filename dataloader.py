@@ -12,6 +12,7 @@ def prep_fn(img):
 
 
 class DataLoader():
+
     def __init__(self, data_dir = "../data/combined", split = 0.2, batch_size = 64, task = 'full'):
         self.data_dir = data_dir
         self.split = split
@@ -21,32 +22,86 @@ class DataLoader():
         self.data_generator = ImageDataGenerator(preprocessing_function=prep_fn,
                                             horizontal_flip=True,
                                             vertical_flip=True)
+        if task == 'planet':
+                    
+            self.train_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir, "planet", "train"),  # This is the source directory for training images
+                classes = ['combinedPlanetForests', 'combinedPlanetOrchards'],#['planetSplitForests/train', 'planetSplitOrchards/train'],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                # Use binary labels
+                class_mode='binary')
 
-        #task_class = 'contrast_eq_OilPalm' if task == 'palm' else 'contrast_eq_orchards'
-        combined = False
-        if combined:
-            classes = ['combinedGoogleMapsForests', 'combinedGoogleMapsOrchards']
-            data_dir = "../data/combined"
+            self.val_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir, "planet", "val"),  # This is the source directory for training images
+                classes = ['combinedPlanetForests', 'combinedPlanetOrchards'],#['planetSplitForests/val', 'planetSplitOrchards/val'],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                shuffle=False,
+                # Use binary labels
+                class_mode='binary')
+
+        elif task == 'planet-small':
+             
+            self.data_generator = ImageDataGenerator(rescale=1/255,
+                                            horizontal_flip=True,
+                                            vertical_flip=True, validation_split = split)       
+            self.train_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir),#, "data2"),#, "train"),  # This is the source directory for training images
+                classes = ['planetSinglesForests', 'planetSinglesOrchards'],#['planetSplitForests/train', 'planetSplitOrchards/train'],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                # Use binary labels
+                class_mode='binary',
+                subset='training')
+
+            self.val_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir),#, "data2"),#, "val"),  # This is the source directory for training images
+                classes = ['planetSinglesForests', 'planetSinglesOrchards'],#['planetSplitForests/val', 'planetSplitOrchards/val'],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                shuffle=False,
+                subset='validation',
+                # Use binary labels
+                class_mode='binary')
+
+
         else:
-            classes = ["ImagesGoogleMapsForests", "imagesGoogleMapsCashewsGreater2HectTechnoserve"]
-            data_dir = "../data/TechnoserveImagery"
+            task_class = 'contrast_eq_OilPalm' if task == 'palm' else 'contrast_eq_orchards'
+            
+            self.train_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir, "data2", "train"),  # This is the source directory for training images
+                classes = ['contrast_eq_forests', task_class],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                # Use binary labels
+                class_mode='binary')
 
-        self.train_generator = self.data_generator.flow_from_directory(
-            os.path.join(data_dir, "train"),  # This is the source directory for training images
-            classes = classes,
-            target_size=(224, 224),
-            batch_size=self.batch_size,
-            # Use binary labels
-            class_mode='binary')
+            self.val_generator = self.data_generator.flow_from_directory(
+                os.path.join(data_dir, "data2", "val"),  # This is the source directory for training images
+                classes = ['contrast_eq_forests', task_class],
+                target_size=(224, 224),
+                batch_size=self.batch_size,
+                shuffle=False,
+                # Use binary labels
+                class_mode='binary')
 
-        self.val_generator = self.data_generator.flow_from_directory(
-            os.path.join(data_dir, "val"),  # This is the source directory for training images
-            classes = classes,
-            target_size=(224, 224),
-            batch_size=self.batch_size,
-            shuffle=False,
-            # Use binary labels
-            class_mode='binary')
+
+    #Used this when I was playing around with featurewise_center=True in ImageDataGenerator
+    def fit(self):
+        self.data_generator.fit(load_all_images(
+            os.path.join(self.data_dir, "ImagesGoogleMapsForests"), 224, 224))
+
+
+def read_pil_image(img_path, height, width):
+    with open(img_path, 'rb') as f:
+        return np.array(Image.open(f).convert('RGB').resize((width, height)))
+
+def load_all_images(dataset_path, height, width, img_ext='jpg'):
+    return np.array([read_pil_image(str(p), height, width) for p in
+                     Path(dataset_path).rglob("*." + img_ext)])
+
+
 
 
 class TifDataGenerator(tf.keras.preprocessing.image.ImageDataGenerator):

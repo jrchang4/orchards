@@ -197,7 +197,7 @@ def output_layer_multi(model, planet_features):
 
 Multimodal = Model(inceptionv3.input, output_layer_multi(inceptionv3, planet_input))
 #[inceptionv3.input, planet_input]
-Inception = Model(inceptionv3.input, output_layer(inceptionv3))
+#Inception = Model(inceptionv3.input, output_layer(inceptionv3))
 
 #sat_feat = vgg_conv(planet_imgs)
 

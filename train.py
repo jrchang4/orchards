@@ -141,6 +141,7 @@ class Classifier():
 
   def eval_model(self):
     print("="*80 + "Evaluating model" + "="*80)
+    print('this is the eval_model function')
         
     if self.test:
       print("Restoring model weights from ", self.checkpoint_filepath)
@@ -150,7 +151,9 @@ class Classifier():
               loss = 'binary_crossentropy',
               metrics=['accuracy', 'AUC', self.recall_m, self.precision_m, self.f1_m])
 
+    print('about to generate test  dataset')
     val_data = self.data.val_generator
+    print('finished generating test dataset from val_generator')
     self.binary_get_fp_and_fn_filenames(val_data)
     self.model.evaluate(val_data)
 
