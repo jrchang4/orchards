@@ -7,6 +7,7 @@ python train.py
 Use --epochs flag to specify the number of epochs.
 Use --model-name flag to specify the model in models.py to train.
 Use --checkpoint flag to specify the name of the saved model checkpoint.
+Use --exp-name flag to name your experiment.
 
 To evaluate a model:
 
@@ -27,8 +28,6 @@ Local - From the parent directory of the 'orchards' git repository, run:
 tensorboard --logdir tensorboard
 
 Open the provided link in a web browser (http://localhost:6006/)
-
-Remote VM
 
 Mount data in VM:
 

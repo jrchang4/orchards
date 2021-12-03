@@ -132,16 +132,6 @@ xception = tf.keras.applications.Xception(
 for layer in xception.layers:
   layer.trainable = False
   
-xception2 = tf.keras.applications.Xception(
-  include_top=False,
-  weights="imagenet", 
-  input_shape=(224,224, 3),
-)
-
-for layer in xception2.layers:
-  layer.trainable = False
-  layer._name = layer.name + str("_2")
-  
 inceptionv3 = tf.keras.applications.InceptionV3(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
 
 for layer in inceptionv3.layers:
@@ -197,7 +187,7 @@ def output_layer_multi(model1, model2):
   x = Dense(1, activation='sigmoid')(x)
   return x
 
-Multimodal = Model([xception2.input, xception.input], output_layer_multi(xception2, xception))
+Multimodal = Model([inceptionv3.input, xception.input], output_layer_multi(inceptionv3, inceptionv3))
 #[inceptionv3.input, planet_input]
 
 #sat_feat = vgg_conv(planet_imgs)
