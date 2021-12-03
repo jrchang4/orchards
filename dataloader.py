@@ -25,7 +25,7 @@ class DataLoader():
             batch_size=self.batch_size,
             # Use binary labels
             class_mode='binary')
-
+        
         self.val_generator = self.data_generator.flow_from_directory(
             os.path.join(data_dir, "data2", "val"),  # This is the source directory for training images
             classes = ['contrast_eq_forests', task_class],
@@ -35,10 +35,46 @@ class DataLoader():
             # Use binary labels
             class_mode='binary')
 
+        def make_generator(path, class1, class2, shuffle):
+            return self.data_generator.flow_from_directory(
+                path,
+                classes = [class1,class2],
+                target_size=(224,224),
+                batch_size=self.batch_size,
+                shuffle=shuffle,
+                class_mode='binary')
+
+        self.multi_train_google = make_generator("../data/GoogleMapsNewImagery/train/","imagesGoogleMapsForestsGreater2Hect","imagesGoogleMapsOrchardsGreater2Hect", True)
+        self.multi_val_google = make_generator("../data/GoogleMapsNewImagery/val/","imagesGoogleMapsForestsGreater2Hect", "imagesGoogleMapsOrchardsGreater2Hect", False)
+        self.multi_train_planet = make_generator("../../angelats11_gmail_com/planetSplit/train/","planetImageryForestsGreater2Hect", "planetImageryOrchardsGreater2Hect", True)
+        self.multi_val_planet = make_generator("../../angelats11_gmail_com/planetSplit/val/","planetImageryForestsGreater2Hect", "planetImageryOrchardsGreater2Hect", False)
     #Used this when I was playing around with featurewise_center=True in ImageDataGenerator
     def fit(self):
         self.data_generator.fit(load_all_images(
             os.path.join(self.data_dir, "ImagesGoogleMapsForests"), 224, 224))
+
+    def generate_multiple(self, gen1, gen2):
+        while True:
+            data1 = gen1.next()
+            data2 = gen2.next()
+            yield [data1[0], data2[0]], data1[1]
+
+    def separate_data(self, data_generator):
+        data_list = []
+        labels_list = []
+        batch_index = 0
+
+        while batch_index <= data_generator.batch_index:
+            data = data_generator.next()
+            data_list.append(data[0])
+            labels_list.append(data[1])
+            batch_index = batch_index + 1
+
+        # now, data_array is the numeric data of whole images
+        data_array = np.asarray(data_list)
+        labels_array = np.asarray(labels_list)
+
+        return data_array, labels_array
 
 
 def read_pil_image(img_path, height, width):

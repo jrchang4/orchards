@@ -163,32 +163,32 @@ ResNet = Model(resnet.input, output_layer(resnet))
 
 
 planet_input = Input(shape=(224,224,3), name='planet_input')
-def output_layer_multi(model, planet_features):
+def output_layer_multi(model1, model2):
   # Flatten the output layer to 1 dimension
-  x = Flatten()(model.output)
+  x = layers.concatenate([model1.output, model2.output])
+  x = Flatten()(x)
   # Add a fully connected layer with 1,024 hidden units and ReLU activation
   x = Dense(1024, activation='relu')(x)#, kernel_regularizer=regularizers.l2(args.reg),
   #  bias_regularizer=regularizers.l2(args.reg),
   #  activity_regularizer=regularizers.l2(args.reg))(x)
   # Add a dropout rate of 0.2
   
-  #x = Dropout(args.dropout)(x)
+  x = Dropout(args.dropout)(x)
   # Add a final sigmoid layer for classification
   
-  planet_feat = vgg_conv(planet_features)
+  # planet_feat = vgg_conv(planet_features)
 
-  y = layers.concatenate([x, planet_feat])
+  # y = layers.concatenate([x, planet_feat])
 
-  merged = Dense(128, activation='relu')(y)
-  predictions = Dense(1, activation='sigmoid', name='main_output')(merged)
+  # merged = Dense(128, activation='relu')(y)
+  # predictions = Dense(1, activation='sigmoid', name='main_output')(merged)
 
 
-#  x = Dense(1, activation='sigmoid')(x)
+  x = Dense(1, activation='sigmoid')(x)
   return x
 
-Multimodal = Model(inceptionv3.input, output_layer_multi(inceptionv3, planet_input))
+Multimodal = Model([inceptionv3.input, xception.input], output_layer_multi(inceptionv3, inceptionv3))
 #[inceptionv3.input, planet_input]
-Inception = Model(inceptionv3.input, output_layer(inceptionv3))
 
 #sat_feat = vgg_conv(planet_imgs)
 
