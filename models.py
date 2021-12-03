@@ -120,23 +120,25 @@ AlexNet.add(Dropout(0.4))
 #  output Layer
 AlexNet.add(Dense(1, activation='sigmoid'))
 
-AlexNet.summary()
+#AlexNet.summary()
 
-
+##### XCEPTION #####
 xception = tf.keras.applications.Xception(
     include_top=False,
     weights="imagenet",
-    input_shape=(224,224, 3),
+    input_shape=(224,224, 3)
 )
 
 for layer in xception.layers:
   layer.trainable = False
-  
+
+##### INCEPTION #####
 inceptionv3 = tf.keras.applications.InceptionV3(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
 
 for layer in inceptionv3.layers:
   layer.trainable = False
-  
+
+##### RESNET #####
 resnet = tf.keras.applications.ResNet50(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
 
 for layer in resnet.layers:
@@ -145,12 +147,19 @@ for layer in resnet.layers:
 def output_layer(model):
   # Flatten the output layer to 1 dimension
   x = Flatten()(model.output)
-  # Add a fully connected layer with 1,024 hidden units and ReLU activation
-  x = Dense(1024, activation='relu', kernel_regularizer=regularizers.l2(args.reg),
+  # Add a first fully connected layer with 800 hidden units and ReLU activation
+  x = Dense(800, activation='relu', kernel_regularizer=regularizers.l2(args.reg),
     bias_regularizer=regularizers.l2(args.reg),
     activity_regularizer=regularizers.l2(args.reg))(x)
   # Add a dropout rate of 0.2
   x = Dropout(args.dropout)(x)
+
+  # Add a second fully connected layer with 800 hidden units and ReLU activation
+  x = Dense(800, activation='relu', kernel_regularizer=regularizers.l2(args.reg),
+    bias_regularizer=regularizers.l2(args.reg),
+    activity_regularizer=regularizers.l2(args.reg))(x)
+  x = Dropout(args.dropout)(x)
+
   # Add a final sigmoid layer for classification
   x = Dense(1, activation='sigmoid')(x)
   return x
@@ -169,27 +178,12 @@ def output_layer_multi(model1, model2):
   x = Flatten()(x)
   # Add a fully connected layer with 1,024 hidden units and ReLU activation
   x = Dense(1024, activation='relu')(x)#, kernel_regularizer=regularizers.l2(args.reg),
-  #  bias_regularizer=regularizers.l2(args.reg),
-  #  activity_regularizer=regularizers.l2(args.reg))(x)
-  # Add a dropout rate of 0.2
-  
+
   x = Dropout(args.dropout)(x)
-  # Add a final sigmoid layer for classification
-  
-  # planet_feat = vgg_conv(planet_features)
-
-  # y = layers.concatenate([x, planet_feat])
-
-  # merged = Dense(128, activation='relu')(y)
-  # predictions = Dense(1, activation='sigmoid', name='main_output')(merged)
-
-
   x = Dense(1, activation='sigmoid')(x)
   return x
 
 Multimodal = Model([inceptionv3.input, xception.input], output_layer_multi(inceptionv3, inceptionv3))
-#[inceptionv3.input, planet_input]
 
-#sat_feat = vgg_conv(planet_imgs)
 
 

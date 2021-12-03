@@ -8,9 +8,9 @@ def get_args():
     psr.add_argument("--exp-name", type=str, default= datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), help="Name of the experiment")
     psr.add_argument("--test", action='store_true')
     psr.add_argument("--batch-size", type=int, default=64, help="Number of batches.")
-    psr.add_argument("--task", type=str, default="full", choices = ["full", "palm"], help="Full task Orchards vs Forests, or Palm vs Forests")
+    psr.add_argument("--task", type=str, default="full", choices = ["full", "palm", "planet"], help="Full task Orchards vs Forests, or Palm vs Forests, or Planet full task")
     psr.add_argument("--dropout", type=float, default=0.2, help="Dropout percentage.")
-    psr.add_argument("--reg", type=float, default=0.1, help="Regularization constraint.")
+    psr.add_argument("--reg", type=float, default=0.0, help="Regularization constraint.")
     psr.add_argument("--fine-tune", action="store_true", help="Fine Tune Model")
     psr.add_argument("--checkpoint", type=str, default= None, help="checkpoint to load model")
 

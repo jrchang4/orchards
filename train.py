@@ -1,6 +1,7 @@
 import tensorflow as tf
+from tensorflow import keras
 from sklearn.metrics import classification_report, confusion_matrix
-from keras import backend as K
+from tensorflow.keras import backend as K
 import numpy as np
 from config import get_args
 import models
@@ -12,7 +13,7 @@ import pickle
 
 class Classifier():
   def __init__(self, data, model_name, exp_name,test, batch_size, fine_tune, checkpoint):
-
+  
     self.data = data
     self.test = test
     self.exp_name = exp_name
@@ -25,7 +26,6 @@ class Classifier():
               loss = 'binary_crossentropy',
               metrics=['AUC', 'accuracy', self.recall_m, self.precision_m, self.f1_m])
     self.fine_tune = fine_tune
-
 
   def recall_m(self, y_true, y_pred):
         true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
@@ -158,6 +158,7 @@ class Classifier():
 
   def eval_model(self):
     print("="*80 + "Evaluating model" + "="*80)
+    print('this is the eval_model function')
         
     if self.test:
       print("Restoring model weights from ", self.checkpoint_filepath)
