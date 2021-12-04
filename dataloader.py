@@ -25,7 +25,7 @@ class DataLoader():
         if task == 'planet':
                     
             self.train_generator = self.data_generator.flow_from_directory(
-                os.path.join(data_dir, "planet", "train"),  # This is the source directory for training images
+                os.path.join(data_dir, "train"),  # This is the source directory for training images
                 classes = ['combinedPlanetForests', 'combinedPlanetOrchards'],#['planetSplitForests/train', 'planetSplitOrchards/train'],
                 target_size=(224, 224),
                 batch_size=self.batch_size,
@@ -33,7 +33,7 @@ class DataLoader():
                 class_mode='binary')
 
             self.val_generator = self.data_generator.flow_from_directory(
-                os.path.join(data_dir, "planet", "val"),  # This is the source directory for training images
+                os.path.join(data_dir, "val"),  # This is the source directory for training images
                 classes = ['combinedPlanetForests', 'combinedPlanetOrchards'],#['planetSplitForests/val', 'planetSplitOrchards/val'],
                 target_size=(224, 224),
                 batch_size=self.batch_size,
@@ -67,19 +67,18 @@ class DataLoader():
 
 
         else:
-            task_class = 'contrast_eq_OilPalm' if task == 'palm' else 'contrast_eq_orchards'
-            
+            classes = ['combinedGoogleMapsForests', 'combinedGoogleMapsOrchards']
             self.train_generator = self.data_generator.flow_from_directory(
-                os.path.join(data_dir, "data2", "train"),  # This is the source directory for training images
-                classes = ['contrast_eq_forests', task_class],
+                os.path.join(data_dir, "train"),  # This is the source directory for training images
+                classes = classes,
                 target_size=(224, 224),
                 batch_size=self.batch_size,
                 # Use binary labels
                 class_mode='binary')
 
             self.val_generator = self.data_generator.flow_from_directory(
-                os.path.join(data_dir, "data2", "val"),  # This is the source directory for training images
-                classes = ['contrast_eq_forests', task_class],
+                os.path.join(data_dir, "val"),  # This is the source directory for training images
+                classes = classes,
                 target_size=(224, 224),
                 batch_size=self.batch_size,
                 shuffle=False,
@@ -96,8 +95,8 @@ class DataLoader():
                 shuffle=shuffle,
                 class_mode='binary')
 
-        self.multi_train_google = make_generator("../data/GoogleMapsNewImagery/train/","imagesGoogleMapsForestsGreater2Hect","imagesGoogleMapsOrchardsGreater2Hect", True)
-        self.multi_val_google = make_generator("../data/GoogleMapsNewImagery/val/","imagesGoogleMapsForestsGreater2Hect", "imagesGoogleMapsOrchardsGreater2Hect", False)
+        self.multi_train_google = make_generator("../data/combined/train/","combinedGoogleMapsForests","combinedGoogleMapsOrchards", True)
+        self.multi_val_google = make_generator("../data/combined/val/","combinedGoogleMapsForests", "combinedGoogleMapsOrchards", False)
         self.multi_train_planet = make_generator("../../angelats11_gmail_com/planetSplit/train/","planetImageryForestsGreater2Hect", "planetImageryOrchardsGreater2Hect", True)
         self.multi_val_planet = make_generator("../../angelats11_gmail_com/planetSplit/val/","planetImageryForestsGreater2Hect", "planetImageryOrchardsGreater2Hect", False)
     #Used this when I was playing around with featurewise_center=True in ImageDataGenerator
