@@ -3,7 +3,7 @@
 2.  Install gcsfuse if not already installed
 
 3.  Data must be mounted through a GCP bucket as follows.  
-Run the command outside of the code/ directory.
+Run the command outside the project directory, not the /code directory.
 
   gcloud auth application-default login
 
