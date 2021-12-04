@@ -95,8 +95,8 @@ class DataLoader():
                 shuffle=shuffle,
                 class_mode='binary')
 
-        self.multi_train_google = make_generator("../data/combined/train/","combinedGoogleMapsForests","combinedGoogleMapsOrchards", True)
-        self.multi_val_google = make_generator("../data/combined/val/","combinedGoogleMapsForests", "combinedGoogleMapsOrchards", False)
+        self.multi_train_google = make_generator("../data/GoogleMapsNewImagery/train/"," imagesGoogleMapsForestsGreater2Hect"," imagesGoogleMapsOrchardsGreater2Hect/", True)
+        self.multi_val_google = make_generator("../data/GoogleMapsNewImagery/val/","imagesGoogleMapsForestsGreater2Hect", "imagesGoogleMapsOrchardsGreater2Hect", False)
         self.multi_train_planet = make_generator("../../angelats11_gmail_com/planetSplit/train/","planetImageryForestsGreater2Hect", "planetImageryOrchardsGreater2Hect", True)
         self.multi_val_planet = make_generator("../../angelats11_gmail_com/planetSplit/val/","planetImageryForestsGreater2Hect", "planetImageryOrchardsGreater2Hect", False)
     #Used this when I was playing around with featurewise_center=True in ImageDataGenerator
