@@ -8,3 +8,5 @@ Run the command outside the project directory, not the /code directory.
   gcloud auth application-default login
 
   gcsfuse --implicit-dirs es262-orchards-forests data
+  
+4. Our cloud bucket has a number of directories. The expanded dataset is included within "combined". Within combined there will be "train", "val" and "test" directories. These were created using the Python Package split-folders. In dataloader.py, you can change the path that the train and val generators use in the 'else' statement if you'd like to chnage the dataset that the val or train set points to. For example, to test on the holdout technoserve data.
