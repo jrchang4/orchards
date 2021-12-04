@@ -1,0 +1,9 @@
+To run a complete test and evaluation, once the data has been setup, run main.sh 
+from inside the code/ directory.  The only argument is the number of epochs to 
+train for before fine tuning.  We recommend 40, but this will take a while.
+We recommend running inside a tmux environment.  The output will be an accuracy 
+and F1 score.
+
+1.  cd code
+2.  tmux new -t <session name>
+2.  bash main.sh <num_epochs>

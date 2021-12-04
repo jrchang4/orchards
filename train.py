@@ -8,7 +8,6 @@ import models
 from dataloader import DataLoader
 import os
 from iterator import Iterator
-import itertools
 import pickle
 
 class Classifier():
@@ -63,8 +62,7 @@ class Classifier():
       print('Confusion Matrix')
       tn, fp, fn, tp = confusion_matrix(labels.classes[:len(prob_predicted)], binary_predict).ravel()
       print("TN: {}, FP: {}, FN: {}, TP: {}".format(tn, fp, fn, tp)) 
-    
-        
+      print("F1: ", tp/(tp+0.5*(fp+fn)))
     
       
       if self.model_name != 'Multimodal':

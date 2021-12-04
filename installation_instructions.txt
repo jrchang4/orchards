@@ -1,0 +1,10 @@
+1. Use Python 3.7
+
+2.  Install gcsfuse if not already installed
+
+3.  Data must be mounted through a GCP bucket as follows.  
+Run the command outside the project directory, not the /code directory.
+
+  gcloud auth application-default login
+
+  gcsfuse --implicit-dirs es262-orchards-forests data
