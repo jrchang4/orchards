@@ -7,14 +7,15 @@ import rasterio as rs
 
 #path = Path("../test/PlanetNewImagery/test/planetImageryForestsGreater2Hect").rglob("*.tif")
 #out_path = "../planetSplit/test/planetImageryForestsGreater2Hect/" 
-path = Path("../data/combined/test/combinedPlanetForests").rglob("*.tif")
+pathstr = "../data/combined/test/combinedPlanetForests"
+path = Path(pathstr).rglob("*.tif")
 out_path = "../planet/test/combinedPlanetForests/"
 
 for img_p in path:
     #if str(img_p[36:-4]) < 'way308294349':
     #    if img_p[36] != 'r':
     #        continue
-    startindex = len(path) + 1
+    startindex = len(pathstr) + 1
     m1img_out_path = out_path +  str(img_p)[startindex:-4]+'m1'+str(img_p)[-4:]
 
     '''
@@ -46,13 +47,14 @@ print('finished test data forests')
 
 #path = Path("../test/PlanetNewImagery/train/planetImageryForestsGreater2Hect").rglob("*.tif")
 #out_path = "../planetSplit/train/planetImageryForestsGreater2Hect/" 
-path = Path("../data/combined/train/combinedPlanetForests").rglob("*.tif")
+pathstr = "../data/combined/train/combinedPlanetForests"
+path = Path(pathstr).rglob("*.tif")
 out_path = "../planet/train/combinedPlanetForests/"
 for img_p in path:
     #if str(img_p[36:-4]) < 'way308294349':
     #    if img_p[36] != 'r':
     #        continue
-    startindex = len(path) + 1
+    startindex = len(pathstr) + 1
     m1img_out_path = out_path +  str(img_p)[startindex:-4]+'m1'+str(img_p)[-4:]
 
     '''
@@ -82,13 +84,14 @@ for img_p in path:
 
 print('finished train data forests')
 
-path = Path("../data/combined/val/combinedPlanetForests").rglob("*.tif")
+pathstr = "../data/combined/val/combinedPlanetForests"
+path = Path(pathstr).rglob("*.tif")
 out_path = "../planet/val/combinedPlanetForests/" 
 for img_p in path:
     #if str(img_p[36:-4]) < 'way308294349':
     #    if img_p[36] != 'r':
     #        continue
-    startindex = len(path) + 1
+    startindex = len(pathstr) + 1
     m1img_out_path = out_path +  str(img_p)[startindex:-4]+'m1'+str(img_p)[-4:]
 
     '''
@@ -118,14 +121,15 @@ for img_p in path:
 
 print('finished val data forests')
 print('starting ORCHARDS data')
-path = Path("../data/combined/test/combinedPlanetOrchards").rglob("*.tif")
+pathstr = "../data/combined/test/combinedPlanetOrchards"
+path = Path(pathstr).rglob("*.tif")
 out_path = "../planet/test/combinedPlanetOrchards/"
 
 for img_p in path:
     #if str(img_p[36:-4]) < 'way308294349':
     #    if img_p[36] != 'r':
     #        continue
-    startindex = len(path) + 1
+    startindex = len(pathstr) + 1
     m1img_out_path = out_path +  str(img_p)[startindex:-4]+'m1'+str(img_p)[-4:]
 
 
@@ -150,13 +154,14 @@ print('finished test data orchards')
 
 #path = Path("../test/PlanetNewImagery/train/planetImageryForestsGreater2Hect").rglob("*.tif")
 #out_path = "../planetSplit/train/planetImageryForestsGreater2Hect/" 
-path = Path("../data/combined/train/combinedPlanetOrchards").rglob("*.tif")
+pathstr = "../data/combined/train/combinedPlanetOrchards"
+path = Path(pathstr).rglob("*.tif")
 out_path = "../planet/train/combinedPlanetOrchards/"
 for img_p in path:
     #if str(img_p[36:-4]) < 'way308294349':
     #    if img_p[36] != 'r':
     #        continue
-    startindex = len(path) + 1
+    startindex = len(pathstr) + 1
     m1img_out_path = out_path +  str(img_p)[startindex:-4]+'m1'+str(img_p)[-4:]
 
     '''
@@ -185,14 +190,14 @@ for img_p in path:
         dst.write(m1.astype(rs.uint16))
 
 print('finished train data orchards')
-
-path = Path("../data/combined/val/combinedPlanetOrchards").rglob("*.tif")
+pathstr = "../data/combined/val/combinedPlanetOrchards"
+path = Path(pathstr).rglob("*.tif")
 out_path = "../planet/val/combinedPlanetOrchards/" 
 for img_p in path:
     #if str(img_p[36:-4]) < 'way308294349':
     #    if img_p[36] != 'r':
     #        continue
-    startindex = len(path) + 1
+    startindex = len(pathstr) + 1
     m1img_out_path = out_path +  str(img_p)[startindex:-4]+'m1'+str(img_p)[-4:]
 
     '''
