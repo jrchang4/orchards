@@ -1,4 +1,14 @@
 Directory Setup and Dataloader.py: Our cloud bucket has a number of directories. The expanded dataset is included within "combined". 
+
 Within combined there will be "train", "val" and "test" directories. These were created using the Python Package split-folders. 
 In dataloader.py, you can change the path that the train and val generators use in the 'else' statement if you'd like to chnage the dataset 
 that the val or train set points to. For example, to test on the holdout technoserve data.
+
+However, further processing is needed to use the Planet data, as we split off the bands from what is contained in the "combined" folder. To set up directories with just Planet data, run:
+
+$ python combined-splitter.py 
+from within the code/ directory. (This will draw .tif files from the ../data BUCKET and convert them into 3-band .tif images and output them in a ../planet/[train, test, val] directory.
+
+
+
+
